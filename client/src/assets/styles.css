@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer components{
+    .sidebar-link {
+        @apply flex items-center gap-3 px-2 py-2 transition-all duration-200 rounded-lg cursor-pointer select-none hover:bg-gray-200;
+    }
+    
+    .center {
+        @apply flex justify-center items-center
+    }
+
+    .insta-gradient {
+        @apply bg-gradient-to-tr from-[#FFDC80] via-[#E1306C] via-[#FD1D1D] via-[#F56040] to-[#833AB4]
+    }
+}

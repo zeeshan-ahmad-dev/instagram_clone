@@ -1,0 +1,32 @@
+# ===============================
+# 📦 Node.js (both client & server)
+# ===============================
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# ===============================
+# 🛠 Build Output
+# ===============================
+dist/
+client/dist/
+server/dist/
+dist-ssr/
+*.tsbuildinfo
+
+# ===============================
+# 📁 Logs
+# ===============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ===============================
+# 🌐 Env Files
+# ===============================
+.env
+.env.*.local

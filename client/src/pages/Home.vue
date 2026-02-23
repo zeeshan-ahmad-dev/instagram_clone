@@ -7,7 +7,7 @@
   />
 
   <!-- Main Layout: Feed + Sidebar -->
-  <main class="flex flex-col md:flex-row w-full overflow-y-scroll h-full">
+  <main class="flex flex-col w-full h-full overflow-y-scroll md:flex-row">
     <!-- Feed Section -->
     <div
       class="relative w-full xl:w-[53vw] md:px-12 py-6 flex flex-col items-center"
@@ -31,16 +31,16 @@
         <div
           ref="storyContainer"
           @scroll="handleScroll"
-          class="relative flex items-center justify-start w-full gap-2 md:gap-4 overflow-x-scroll scroll-snap-x snap-mandatory px-1 scrollbar-hide"
+          class="relative flex items-center justify-start w-full gap-2 px-1 overflow-x-scroll md:gap-4 scroll-snap-x snap-mandatory scrollbar-hide"
         >
           <div
             ref="storyItem"
             v-for="(story, index) in stories"
             :key="index"
-            class="snap-start flex flex-col items-center justify-center"
+            class="flex flex-col items-center justify-center snap-start"
           >
             <div
-              class="insta-gradient text-white rounded-full size-20 flex items-center justify-center relative"
+              class="relative flex items-center justify-center text-white rounded-full insta-gradient size-20"
             >
               <div class="absolute z-0 rounded-full size-[4.5rem] bg-white"></div>
               <div class="z-10">
@@ -68,7 +68,7 @@
       </div>
 
       <!-- Posts Section -->
-      <section class="w-full px- md:px-16 lg:px-40 xl:px-16 py-6">
+      <section class="w-full py-6 px- md:px-16 lg:px-40 xl:px-16">
         <div v-if="allPosts.length > 0" class="space-y-5">
           <Post
             v-for="(post, index) in allPosts"

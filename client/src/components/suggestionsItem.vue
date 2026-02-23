@@ -4,8 +4,8 @@
       <div class="w-12">
         <img class="rounded-full w-11 h-11" :src="profileImage" alt="" />
       </div>
-      <div class="text-sm flex flex-col">
-        <router-link :to="userId" class="font-semibold">{{ username }}</router-link>
+      <div class="flex flex-col text-sm">
+        <router-link :to="userId ? `user/${userId}` : '/'" class="font-semibold">{{ username }}</router-link>
         <span class="text-[#737373]">{{ fullName }}</span>
       </div>
     </div>
@@ -64,7 +64,7 @@ const props = defineProps({
   },
   buttonText: {
     type: String
-  }
+  },
 });
 
 const isFollowing = ref(props.isFollowing)

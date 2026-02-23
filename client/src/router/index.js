@@ -3,6 +3,12 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/",
+    name: "Home",
+    component: () => import("@/pages/Home.vue"),
+    meta: { layout: 'main', requiresAuth: true }
+  },
+  {
     path: "/signup",
     name: "Signup",
     component: () => import("@/pages/Signup.vue"),
@@ -21,21 +27,39 @@ const routes = [
     meta: { layout: 'auth' }
   },
   {
+    path: "/search",
+    name: "Search",
+    component: () => import("@/pages/Search.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/explore",
+    name: "Explore",
+    component: () => import("@/pages/Explore.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/messages",
+    name: "Messages",
+    component: () => import("@/pages/Messages.vue"),
+    meta: { layout: 'main', requiresAuth: true }
+  },
+  {
+    path: "/notifications",
+    name: "Notifications",
+    component: () => import("@/pages/Notifications.vue"),
+    meta: { layout: 'main', requiresAuth: true }
+  },
+  {
     path: "/profile/:userId",
     name: "Profile",
     component: () => import("@/pages/Profile.vue"),
     meta: { layout: 'main', requiresAuth: true }
   },
   {
-    path: "/:userId",
+    path: "/user/:userId",
     name: "User Profile",
     component: () => import("@/pages/UserProfile.vue"),
-    meta: { layout: 'main', requiresAuth: true }
-  },
-  {
-    path: "/",
-    name: "Home",
-    component: () => import("@/pages/Home.vue"),
     meta: { layout: 'main', requiresAuth: true }
   },
 ];

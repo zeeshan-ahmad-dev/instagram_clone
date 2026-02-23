@@ -44,10 +44,14 @@
     </div>
 
     <!-- Post Image -->
-    <div
-      class="my-2 overflow-hidden bg-cover w-full h-[585px] border border-gray-300 rounded-sm"
-      :style="{ backgroundImage: `url(http://localhost:8000${post.image})` }"
-    ></div>
+    <div class="h-[585px] overflow-hidden bg-black rounded-md border border-gray-200 my-3">
+      <img 
+        :src="`http://localhost:8000${post.image}`"
+        class="object-contain w-full h-full"
+        alt="Post Image"
+        loading="lazy"
+      >
+    </div>
 
     <!-- Post Actions and Details -->
     <div class="px-4 md:px-0">
@@ -83,14 +87,25 @@
         </div>
 
         <!-- Caption -->
-        <div class="space-x-1 text-sm overflow-hidden flex items-center flex-wrap">
+        <div
+          class="flex flex-wrap items-center space-x-1 overflow-hidden text-sm"
+        >
           <span class="font-semibold">{{ post.user.username }}</span>
           <span
-            :class="[showMore ? 'whitespace-normal' : 'truncate max-w-[4rem] md:max-w-[16rem] overflow-hidden whitespace-nowrap']"
+            :class="[
+              showMore
+                ? 'whitespace-normal'
+                : 'truncate max-w-[4rem] md:max-w-[16rem] overflow-hidden whitespace-nowrap',
+            ]"
           >
             {{ post.caption }}
           </span>
-          <span v-if="post?.caption.length > 40 && !showMore" @click="showMore = true" class="text-[#737373] cursor-pointer">more</span>
+          <span
+            v-if="post?.caption.length > 40 && !showMore"
+            @click="showMore = true"
+            class="text-[#737373] cursor-pointer"
+            >more</span
+          >
         </div>
 
         <!-- Comment preview trigger -->
@@ -160,7 +175,7 @@ const emit = defineEmits(["preview-post"]);
 const commentText = ref("");
 const isLiked = ref(props.post.likes.includes(authStore.getUser.id));
 const likes = ref(props.post.likes.length);
-const showMore = ref(false)
+const showMore = ref(false);
 
 // Emit preview-post event to show full post view
 function previewPost() {
@@ -182,7 +197,7 @@ async function likePost() {
       null,
       {
         withCredentials: true,
-      }
+      },
     );
 
     if (response.data.success) {
@@ -195,7 +210,7 @@ async function likePost() {
       null,
       {
         withCredentials: true,
-      }
+      },
     );
 
     if (response.data.success) {

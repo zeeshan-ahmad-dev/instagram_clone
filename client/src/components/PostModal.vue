@@ -6,7 +6,7 @@
     <!-- Close Icon -->
     <div
       @click="resetCreatePost"
-      class="absolute top-4 right-4 z-10 w-8 cursor-pointer"
+      class="absolute z-10 w-8 cursor-pointer top-4 right-4"
     >
       <img
         src="https://img.icons8.com/?size=100&id=95867&format=png&color=ffffff"
@@ -20,9 +20,15 @@
     >
       <!-- Left Image -->
       <div
-        class="lg:w-1/2 min-h-[40vh] lg:h-auto flex-1 bg-cover bg-center"
-        :style="{ backgroundImage: `url(${getProfileImageUrl(post.image)})` }"
-      ></div>
+        class="lg:w-[60%] min-h-[40vh] lg:h-auto flex-1 bg-black"
+      >
+        <img
+          :src="getProfileImageUrl(post.image)"
+          class="object-contain w-full h-full"
+          alt="Post Image"
+          loading="lazy"
+        />
+      </div>
 
       <!-- Right Content -->
       <div class="flex flex-[0.8] flex-col w-full lg:w-[58%]">
@@ -33,7 +39,7 @@
               <img
                 :src="getProfileImageUrl(post.user.profilePicture)"
                 alt="Pfp"
-                class="w-10 h-10 rounded-full object-cover"
+                class="object-cover w-10 h-10 rounded-full"
               />
             </router-link>
             <router-link
@@ -44,7 +50,7 @@
             </router-link>
           </div>
           <button>
-            <img class="rotate-90 w-5 h-5" :src="three_dots_icon" />
+            <img class="w-5 h-5 rotate-90" :src="three_dots_icon" />
           </button>
         </header>
 
@@ -59,12 +65,12 @@
           >
             <router-link :to="comment.user" class="shrink-0">
               <img
-                class="w-8 h-8 rounded-full object-cover"
+                class="object-cover w-8 h-8 rounded-full"
                 :src="getProfileImageUrl(comment.profilePicture)"
               />
             </router-link>
             <div class="flex-1">
-              <div class="flex gap-1 flex-wrap text-sm">
+              <div class="flex flex-wrap gap-1 text-sm">
                 <router-link
                   :to="`/${comment.user}`"
                   class="font-semibold hover:underline"
@@ -73,7 +79,7 @@
                 </router-link>
                 <p>{{ comment.text }}</p>
               </div>
-              <div class="flex items-center text-xs text-gray-500 gap-4 mt-1">
+              <div class="flex items-center gap-4 mt-1 text-xs text-gray-500">
                 <span>3w</span>
                 <button class="hover:underline">56 likes</button>
                 <button class="hover:underline">Reply</button>
@@ -97,7 +103,7 @@
         </div>
 
         <!-- Footer -->
-        <footer class="border-t relative items-self-end p-3 space-y-2">
+        <footer class="relative p-3 space-y-2 border-t items-self-end">
           <div class="flex justify-between">
             <div class="flex space-x-2">
               <button @click="toggleLike">
@@ -124,7 +130,7 @@
             <p class="text-xs text-gray-500">47 minutes ago</p>
           </div>
 
-          <div class="flex items-center border-t pt-2 space-x-2">
+          <div class="flex items-center pt-2 space-x-2 border-t">
             <button @click="toggleEmojiPicker">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +151,7 @@
               placeholder="Add a comment…"
             />
             <button
-              class="text-blue-500 font-semibold text-sm"
+              class="text-sm font-semibold text-blue-500"
               :class="{ 'opacity-50 cursor-not-allowed': !comment.trim() }"
               :disabled="!comment.trim()"
               @click="postComment"
@@ -196,14 +202,14 @@ watch(
     if (newPost) {
       const response = await axios.get(
         `http://localhost:8000/api/comments/${newPost._id}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       postComments.value = response.data.comments;
       isLiked.value = newPost.likes.includes(authStore.getUser.id);
       likes.value = newPost.likes.length;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Like/Unlike logic
@@ -230,7 +236,7 @@ async function postComment() {
       username: authStore.getUser.username,
       pfp: authStore.getUser.profilePicture,
     },
-    { withCredentials: true }
+    { withCredentials: true },
   );
 
   if (response.data.success) {

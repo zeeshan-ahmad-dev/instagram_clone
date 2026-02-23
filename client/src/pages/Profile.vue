@@ -10,14 +10,14 @@
     />
 
     <main
-      class="px-0 w-full md:px-6 lg:px-4 xl:px-24 overflow-y-auto h-screen scrollbar-hide"
+      class="w-full h-screen px-0 overflow-y-auto md:px-6 lg:px-4 xl:px-24 scrollbar-hide"
     >
       <!-- Profile Section -->
-      <section class="px-4 md:py-16 pb-12 border-b md:space-y-12">
+      <section class="px-4 pb-12 border-b md:py-16 md:space-y-12">
         <!-- Render if User is logded in -->
-        <div v-if="authStore.getUser" class="md:px-6 pt-10 md:py-0">
+        <div v-if="authStore.getUser" class="pt-10 md:px-6 md:py-0">
           <div
-            class="flex gap-7 items-center md:flex-row lg:gap-10 xl:gap-24 xl:px-10 xl:pr-16 py-4 md:py-0"
+            class="flex items-center py-4 gap-7 md:flex-row lg:gap-10 xl:gap-24 xl:px-10 xl:pr-16 md:py-0"
           >
             <!-- Profile image -->
             <div>
@@ -31,7 +31,7 @@
             <!-- Profile info: username, buttons, stats, full name -->
             <div class="space-y-3 md:space-y-5">
               <div
-                class="flex flex-col md:flex-row md:items-center gap-3 text-sm font-semibold md:gap-2"
+                class="flex flex-col gap-3 text-sm font-semibold md:flex-row md:items-center md:gap-2"
               >
                 <div class="flex items-center">
                   <span
@@ -46,7 +46,7 @@
                       class="absolute translate-y-10 -translate-x-12 w-40 md:flex md:flex-col md:text-left shadow-[0_0_16px_rgba(0,0,0,0.2)] md:justify-start md:text-sm overflow-visible bg-white rounded-xl p-2"
                     >
                       <button
-                        class="text-left px-4 py-2 hover:bg-gray-100 trnasition-all rounded-xl"
+                        class="px-4 py-2 text-left hover:bg-gray-100 trnasition-all rounded-xl"
                       >
                         Switch accounts
                       </button>
@@ -55,7 +55,7 @@
                       ></div>
                       <button
                         @click="Logout"
-                        class="text-left px-4 py-2 hover:bg-gray-100 trnasition-all rounded-xl"
+                        class="px-4 py-2 text-left hover:bg-gray-100 trnasition-all rounded-xl"
                       >
                         Log out
                       </button>
@@ -87,7 +87,7 @@
 
               <!-- Post, follower, following stats -->
               <div
-                class="hidden md:flex flex-wrap gap-6 text-sm md:gap-10 md:text-base"
+                class="flex-wrap hidden gap-6 text-sm md:flex md:gap-10 md:text-base"
               >
                 <div class="flex items-center gap-1">
                   <span class="font-semibold">{{
@@ -124,7 +124,7 @@
         </div>
 
         <!-- New Story -->
-        <div class="hidden md:flex justify-start px-4 cursor-pointer md:px-8">
+        <div class="justify-start hidden px-4 cursor-pointer md:flex md:px-8">
           <div class="flex flex-col items-center gap-3 w-30">
             <div class="w-[90px] h-[90px] p-1 border rounded-full relative">
               <div
@@ -138,24 +138,24 @@
 
       <!-- Post, Followers and Following Stats: only for small screens -->
       <div
-        class="flex md:hidden py-2 md:py-0 flex-wrap justify-around md:justify-center gap-6 text-sm md:gap-10 md:text-base"
+        class="flex flex-wrap justify-around gap-6 py-2 text-sm md:hidden md:py-0 md:justify-center md:gap-10 md:text-base"
       >
-        <div class="flex flex-col text-base md:text-base items-center md:gap-1">
+        <div class="flex flex-col items-center text-base md:text-base md:gap-1">
           <span class="font-semibold">{{ authStore.getPosts.length }}</span>
           <span class="text-[#737373]">post</span>
         </div>
-        <div class="flex flex-col text-base md:text-base items-center md:gap-1">
+        <div class="flex flex-col items-center text-base md:text-base md:gap-1">
           <span class="font-semibold">{{ authStore.getUser.followers }}</span>
           <span class="text-[#737373]">followers</span>
         </div>
-        <div class="flex flex-col text-base md:text-base items-center md:gap-1">
+        <div class="flex flex-col items-center text-base md:text-base md:gap-1">
           <span class="font-semibold">{{ authStore.getUser.following }}</span>
           <span class="text-[#737373]">following</span>
         </div>
       </div>
       <!-- Navigation tabs: Posts / Saved / Tagged -->
-      <nav class="flex border-t md:border-none justify-center">
-        <ul class="flex w-full md:w-auto gap-6 md:gap-16">
+      <nav class="flex justify-center border-t md:border-none">
+        <ul class="flex w-full gap-6 md:w-auto md:gap-16">
           <li class="flex-1">
             <button
               @click="activeTab = 'posts'"
@@ -222,7 +222,7 @@
           <div
             class="h-full hidden group-hover:grid place-content-center w-full group-hover:bg-[#00000095]"
           >
-            <div class="flex flex-col items-center gap-1">
+            <div class="flex items-center gap-1">
               <img class="w-5 h-5 bg-cover" :src="comment_light" />
               <span class="text-sm font-bold text-white">{{
                 post.comments.length
@@ -230,9 +230,9 @@
             </div>
           </div>
         </div>
-        <div v-else class="text-center py-6 flex flex-col items-center gap-5">
-          <div class="py-1 px-2 border border-black rounded-full">
-            <img class="w-14 h-16" :src="camera_icon" alt="" />
+        <div v-else class="flex flex-col items-center gap-5 py-6 text-center">
+          <div class="px-2 py-1 border border-black rounded-full">
+            <img class="h-16 w-14" :src="camera_icon" alt="" />
           </div>
           <h2 class="text-4xl font-bold">No Posts Yet</h2>
         </div>

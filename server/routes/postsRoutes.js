@@ -30,4 +30,7 @@ postRoute.patch('/edit/:postId', postController.editPost)
 postRoute.patch('/like/:postId', postController.likePost)
 postRoute.patch('/unlike/:postId', postController.unlikePost)
 
+postRoute.patch('/save/:postId', postController.savePost)
+postRoute.patch('/unsave/:postId', postController.unSavePost)
+
 module.exports = postRoute;

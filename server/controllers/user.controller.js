@@ -22,7 +22,7 @@ class ProfileController {
             res.status(200).json({ success: result.success, message: result.message, user, posts: result.posts });
         } catch (error) {
             console.error("Geting public profile error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
     async getMyProfile(req, res) {
@@ -39,11 +39,12 @@ class ProfileController {
                 followers: result.user.followers.length,
                 following: result.user.following.length,
                 bio: result.user.bio,
-            }
+                savedPosts: result.user.savedPosts,
+            };
             res.status(200).json({ success: result.success, user, posts: result.posts });
         } catch (error) {
             console.error("Getting profile error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
     
@@ -56,7 +57,7 @@ class ProfileController {
             res.status(200).json({ success: result.success, users: result.users });
         } catch (error) {
             console.error("Getting all users error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
 
@@ -70,7 +71,7 @@ class ProfileController {
             res.status(200).json({ success: result.success, message: result.message });
         } catch (error) {
             console.error("Follow error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
 
@@ -81,7 +82,7 @@ class ProfileController {
             res.status(200).json({ success: result.success, message: result.message });
         } catch (error) {
             console.error("unfollow error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
 
@@ -107,7 +108,7 @@ class ProfileController {
             res.status(200).json({ success: result.success, message: result.message, user });
         } catch (error) {
             console.error("update profile error:", error.message);
-            res.status(403).json({ success: false, message: error.message });
+            res.status(error.status || 500).json({ success: false, message: error.message });
         }
     }
 }

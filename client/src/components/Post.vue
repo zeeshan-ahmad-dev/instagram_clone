@@ -44,13 +44,15 @@
     </div>
 
     <!-- Post Image -->
-    <div class="h-[585px] overflow-hidden bg-black rounded-md border border-gray-200 my-3">
-      <img 
+    <div
+      class="h-[585px] overflow-hidden bg-black rounded-md border border-gray-200 my-3"
+    >
+      <img
         :src="`http://localhost:8000${post.image}`"
         class="object-contain w-full h-full"
         alt="Post Image"
         loading="lazy"
-      >
+      />
     </div>
 
     <!-- Post Actions and Details -->
@@ -73,8 +75,9 @@
           </button>
         </div>
         <div>
-          <button>
-            <img class="size-5" :src="bookmark_light_icon" alt="save" />
+          <button @click="toggleSavedPost" class="mr-2">
+            <img  v-if="isSaved" class="size-5" :src="bookmark_light_icon" alt="save" />
+            <img  v-else class="w-8 size-5" :src="bookmark_dark_icon" alt="save" />
           </button>
         </div>
       </div>
@@ -151,6 +154,7 @@ import like_light_icon from "@/assets/icons/like_light.png";
 import like_dark_icon from "@/assets/icons/like_dark.png";
 import send_light_icon from "@/assets/icons/send_light.png";
 import bookmark_light_icon from "@/assets/icons/bookmark_light.svg";
+import bookmark_dark_icon from "@/assets/icons/bookmark_dark.svg";
 import smile_face_icon from "@/assets/icons/smile_face.png";
 import menu_icon from "@/assets/icons/menu_icon.svg";
 import comment_icon from "@/assets/icons/comment.svg";
@@ -175,6 +179,7 @@ const emit = defineEmits(["preview-post"]);
 const commentText = ref("");
 const isLiked = ref(props.post.likes.includes(authStore.getUser.id));
 const likes = ref(props.post.likes.length);
+const isSaved = ref(!authStore.getUser.savedPosts.includes(props.post._id));
 const showMore = ref(false);
 
 // Emit preview-post event to show full post view
@@ -206,7 +211,7 @@ async function likePost() {
     }
   } else {
     const response = await axios.patch(
-      `http://localhost:8000/api/post/like/${props.post._id}`,
+      `http://localhost:8000/api/post/likepr/${ops.post._id}`,
       null,
       {
         withCredentials: true,
@@ -217,6 +222,36 @@ async function likePost() {
       isLiked.value = true;
       likes.value = likes.value + 1;
     }
+  }
+}
+
+// Handles like/unlike logic and UI updates
+async function toggleSavedPost() {
+  const previousState = isSaved.value;
+  isSaved.value = !isSaved.value;
+  try {
+    if (!isSaved) {
+      await axios.patch(
+        `http://localhost:8000/api/post/save/${props.post._id}`,
+        null,
+        {
+          withCredentials: true,
+        },
+      );
+
+      authStore.loadFromStorage();
+    } else {
+      await axios.patch(
+        `http://localhost:8000/api/post/unsave/${props.post._id}`,
+        null,
+        {
+          withCredentials: true,
+        },
+      );
+    }
+  } catch (error) {
+    isSaved.value = previousState;
+    console.log(error);
   }
 }
 

@@ -135,7 +135,6 @@ const PostService = {
       throw new Error("Failed to get post");
     }
   },
-
 }
 
 module.exports = PostService;

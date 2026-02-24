@@ -1,11 +1,12 @@
 const PostService = require("../services/post.service");
+const { UserService } = require("../services/user.service");
 
 class PostController {
   async createPost(req, res) {
     try {
       const { caption } = req.body;
       const image = req.file;
-      
+
       if (!image) {
         return res
           .status(400)
@@ -15,9 +16,18 @@ class PostController {
       const imageUrl = `/uploads/posts/${image.filename}`;
       const post = await PostService.createPost(req, imageUrl, caption);
 
-      if (!post) return res.status(500).json({ success: false, message: "Error creating post!" });
+      if (!post)
+        return res
+          .status(500)
+          .json({ success: false, message: "Error creating post!" });
 
-      res.status(201).json({ success: true, message: "Post created successfully!", post: post });
+      res
+        .status(201)
+        .json({
+          success: true,
+          message: "Post created successfully!",
+          post: post,
+        });
     } catch (error) {
       console.error("Error creating post:", error.message);
       return res
@@ -96,7 +106,11 @@ class PostController {
 
       res
         .status(200)
-        .json({ success: true, message: "Post Liked successfully!", post: updatedPost });
+        .json({
+          success: true,
+          message: "Post Liked successfully!",
+          post: updatedPost,
+        });
     } catch (error) {
       res.status(403).json({ success: false, message: error.message });
     }
@@ -109,9 +123,38 @@ class PostController {
 
       res
         .status(200)
-        .json({ success: true, message: "Post UnLiked successfully!", post: updatedPost });
+        .json({
+          success: true,
+          message: "Post UnLiked successfully!",
+          post: updatedPost,
+        });
     } catch (error) {
       res.status(403).json({ success: false, message: error.message });
+    }
+  }
+  async savePost(req, res) {
+    const postId = req.params.postId;
+    try {
+      await UserService.savePost(req, postId);
+
+      res
+        .status(200)
+        .json({ success: true, message: "Post saved successfully!" });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+  async unSavePost(req, res) {
+    const postId = req.params.postId;
+
+    try {
+      await UserService.unSavePost(req, postId);
+
+      res
+        .status(200)
+        .json({ success: true, message: "Post unSaved successfully!" });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
     }
   }
 }

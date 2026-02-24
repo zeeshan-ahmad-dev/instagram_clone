@@ -265,14 +265,12 @@ import PostModal from "@/components/PostModal.vue";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 // Stores import
 import { useAuthStore } from "@/store/AuthStore";
-import { useUiStore } from "@/store/UiStore";
 // third party imports
 import axios from "axios";
 // Utility function imports
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 
 // Store Initialization
-const uiStore = useUiStore();
 const authStore = useAuthStore();
 
 // UI State
@@ -312,10 +310,10 @@ onMounted(async () => {
         withCredentials: true,
       });
 
-      authStore.login(response.data.user); // store user data
-      authStore.storePosts(response.data.posts); // store user's posts
+      authStore.login(response.data.user);
+      authStore.storePosts(response.data.posts);
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      console.error(" to fetch user:", error);
     }
   }
 });

@@ -205,12 +205,15 @@
       <section
         :class="[
           'gap-1 py-4',
-          authStore.getPosts.length > 0 ? 'grid grid-cols-3' : '',
+          !isLoading ? 'grid grid-cols-3' : '',
         ]"
       >
-        <div
+        <div v-if="isLoading" class="flex items-center justify-center w-full h-[20vh]">
+          <img class="size-10" :src="spinner"/>
+        </div>
+        <div 
           @click="handlePostClick(post)"
-          v-if="authStore.getPosts.length > 0"
+          v-else-if="authStore.getPosts.length > 0"
           v-for="(post, index) in currentPosts"
           :key="index"
           class="aspect-[3/4] w-full cursor-pointer bg-cover group"
@@ -257,6 +260,7 @@ import saved_icon from "@/assets/icons/saved.svg";
 import tag_icon from "@/assets/icons/tag.svg";
 import camera_icon from "@/assets/icons/camera_icon.png";
 import comment_light from "@/assets/icons/comment_light.svg";
+import spinner from "@/assets/icons/spinner.svg";
 // Components import
 import Footer from "@/components/Footer.vue";
 import EditProfileModal from "@/components/EditProfile.vue";
@@ -279,6 +283,7 @@ const showEditModal = ref(false);
 const previewPost = ref(false);
 const selectedPost = ref(null);
 const isMoreActive = ref(false);
+const isLoading = ref(false);
 const currentPosts = ref(authStore.getPosts || []);
 
 watch(activeTab, async (newTab) => {
@@ -301,12 +306,15 @@ function handleKeyUp(e) {
 }
 
 async function fetchSavedPosts() {
+  isLoading.value = true;
   try {
     const res = await axios.get(`http://localhost:8000/api/post/saved/${authStore.getUser.id}`, {withCredentials: true})
 
     return res.data.posts;
   } catch (error) {
     console.log(error);
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -324,7 +332,9 @@ onMounted(async () => {
   if (window.location.href === "#_=_") {
     history.replaceState(null, "#_=_", window.location.pathname);
   }
+
   if (!authStore.isLoggedIn) {
+    isLoading.value = true;
     try {
       const response = await axios.get("http://localhost:8000/api/user/me", {
         withCredentials: true,
@@ -334,6 +344,8 @@ onMounted(async () => {
       authStore.storePosts(response.data.posts);
     } catch (error) {
       console.error(" to fetch user:", error);
+    } finally {
+      isLoading.value = false;
     }
   }
 });

@@ -107,7 +107,9 @@
 
         <!-- Suggested Users List -->
         <div class="space-y-3">
+          <SuggestionsItemSkeleton v-if="isLoading" v-for="i in 3" :key="i" />
           <suggestionItem
+            v-else
             v-for="(user, index) in suggestedUsers"
             :key="user._id"
             :profileImage="getProfileImageUrl(user.profilePicture)"
@@ -148,7 +150,8 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import axios from "axios";
 // Utils Import
 import { getProfileImageUrl } from "@/utils/imageHelpers";
-import PostSkeleton from "@/components/posts/PostSkeleton.vue";
+import PostSkeleton from "@/components/skeletons/PostSkeleton.vue";
+import SuggestionsItemSkeleton from "@/components/skeletons/SuggestionsItemSkeleton.vue";
 
 const stories = [
   {

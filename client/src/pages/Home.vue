@@ -3,6 +3,7 @@
   <PostModal
     :post="selectedPost"
     :visible="previewPost"
+    :is-post-loading="isPostLoading"
     @close="resetCreatePost"
   />
 
@@ -72,7 +73,7 @@
       <!-- Posts Section -->
       <section class="w-full py-6 md:px-16 lg:px-40 xl:px-16">
         <div v-if="isLoading">
-          <PostSkeleton v-for="i in 3" :key="i"/>
+          <PostSkeleton v-for="i in 3" :key="i" />
         </div>
         <div v-if="allPosts.length > 0" class="space-y-5">
           <Post
@@ -188,6 +189,7 @@ const scrollLeft = ref(0);
 const suggestedUsers = ref([]);
 const allPosts = ref([]);
 const isLoading = ref(false);
+const isPostLoading = ref(false);
 
 // Reactive States for postModal
 const previewPost = ref(false);
@@ -262,11 +264,18 @@ const prevStories = () => {
 };
 
 async function handlePostClick(post) {
-  const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-    withCredentials: true,
-  });
-  selectedPost.value = res.data.post;
-  previewPost.value = true;
+  isPostLoading.value = true;
+  try {
+    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
+      withCredentials: true,
+    });
+    selectedPost.value = res.data.post;
+    previewPost.value = true;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isPostLoading.value = false;
+  }
 }
 
 function resetCreatePost() {

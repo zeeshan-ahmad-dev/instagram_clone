@@ -1,6 +1,6 @@
 <template>
   <section
-    v-if="visible"
+    v-if="visible || isPostLoading"
     class="fixed inset-0 z-[100000] flex items-center justify-center bg-black/60 p-4"
   >
     <!-- Close Icon -->
@@ -14,9 +14,11 @@
       />
     </div>
 
+    <div v-if="isPostLoading" class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-4xl h-[85vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"></div>
     <!-- Container -->
     <div
-      class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-5xl h-[90vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
+      v-else
+      class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl  xl:max-w-4xl h-[85vh]  md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
     >
       <!-- Left Image -->
       <div class="lg:w-[60%] min-h-[40vh] lg:h-auto flex-1 bg-black">
@@ -54,7 +56,7 @@
 
         <!-- Comments -->
         <div
-          class="flex-1 overflow-y-scroll max-h-[25%] md:max-h-[90%] lg:max-h-none p-3 space-y-3 scrollbar-hide"
+          class="flex-1 overflow-y-scroll max-h-[32%] md:max-h-[90%] lg:max-h-none p-3 space-y-3 scrollbar-hide"
         >
           <div
             v-for="(comment, index) in postComments"
@@ -179,6 +181,7 @@ import save_icon from "@/assets/icons/saved.svg";
 const props = defineProps({
   post: Object,
   visible: Boolean,
+  isPostLoading: Boolean
 });
 
 // Emits

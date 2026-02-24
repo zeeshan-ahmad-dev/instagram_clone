@@ -211,7 +211,7 @@ async function likePost() {
     }
   } else {
     const response = await axios.patch(
-      `http://localhost:8000/api/post/like/${ops.post._id}`,
+      `http://localhost:8000/api/post/like/${props.post._id}`,
       null,
       {
         withCredentials: true,

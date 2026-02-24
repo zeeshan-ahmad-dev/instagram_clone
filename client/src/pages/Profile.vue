@@ -303,7 +303,6 @@ function handleKeyUp(e) {
 async function fetchSavedPosts() {
   try {
     const res = await axios.get(`http://localhost:8000/api/post/saved/${authStore.getUser.id}`, {withCredentials: true})
-    console.log(res)
 
     return res.data.posts;
   } catch (error) {

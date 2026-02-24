@@ -19,9 +19,7 @@
       class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-5xl h-[90vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
     >
       <!-- Left Image -->
-      <div
-        class="lg:w-[60%] min-h-[40vh] lg:h-auto flex-1 bg-black"
-      >
+      <div class="lg:w-[60%] min-h-[40vh] lg:h-auto flex-1 bg-black">
         <img
           :src="getProfileImageUrl(post.image)"
           class="object-contain w-full h-full"
@@ -35,7 +33,7 @@
         <!-- Header -->
         <header class="flex items-center justify-between p-4 border-b">
           <div class="flex items-center">
-            <router-link :to="`${post._id}`" class="mr-3">
+            <router-link :to="`/user/${post.user._id}`" class="mr-3">
               <img
                 :src="getProfileImageUrl(post.user.profilePicture)"
                 alt="Pfp"
@@ -43,7 +41,7 @@
               />
             </router-link>
             <router-link
-              :to="`${post._id}`"
+              :to="`/user/${post.user._id}`"
               class="text-sm font-semibold hover:text-gray-500"
             >
               {{ post.user.username }}

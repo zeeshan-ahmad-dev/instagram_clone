@@ -2,17 +2,18 @@
   <PostModal
     :post="selectedPost"
     :visible="previewPost"
+    :is-post-loading="isPostLoading"
     @close="resetCreatePost"
   />
 
   <main
-    class="px-0 w-full md:px-6 lg:px-4 xl:px-24 overflow-y-auto h-screen scrollbar-hide"
+    class="w-full h-screen px-0 overflow-y-auto md:px-6 lg:px-4 xl:px-24 scrollbar-hide"
   >
     <!-- Profile Section -->
-    <section class="px-4 md:py-16 pb-12 border-b md:space-y-12">
-      <div v-if="user" class="md:px-6 pt-10 md:py-0">
+    <section class="px-4 pb-12 border-b md:py-16 md:space-y-12">
+      <div v-if="user" class="pt-10 md:px-6 md:py-0">
         <div
-          class="flex gap-7 items-center md:flex-row lg:gap-10 xl:gap-24 xl:px-10 xl:pr-16 py-4 md:py-0"
+          class="flex items-center py-4 gap-7 md:flex-row lg:gap-10 xl:gap-24 xl:px-10 xl:pr-16 md:py-0"
         >
           <!-- Profile image -->
           <div>
@@ -26,7 +27,7 @@
           <!-- User Info -->
           <div class="space-y-3 md:space-y-5">
             <div
-              class="flex flex-col md:flex-row md:items-center gap-3 text-sm font-semibold md:gap-2"
+              class="flex flex-col gap-3 text-sm font-semibold md:flex-row md:items-center md:gap-2"
             >
               <div class="flex items-center">
                 <span
@@ -63,7 +64,7 @@
                 >
                   Message
                 </button>
-                <button class="bg-gray-200 rounded-md p-1">
+                <button class="p-1 bg-gray-200 rounded-md">
                   <img
                     class="w-5"
                     :src="similar_person_icon"
@@ -72,7 +73,7 @@
                 </button>
               </div>
 
-              <button class="hidden md:block rounded-md p-1">
+              <button class="hidden p-1 rounded-md md:block">
                 <img
                   class="w-6 rotate-90"
                   :src="three_dots_icon"
@@ -83,7 +84,7 @@
 
             <!-- Stats for md+ screens -->
             <div
-              class="hidden md:flex flex-wrap gap-6 text-sm md:gap-10 md:text-base"
+              class="flex-wrap hidden gap-6 text-sm md:flex md:gap-10 md:text-base"
             >
               <div class="flex gap-1">
                 <span class="font-semibold">{{ posts.length }}</span>
@@ -117,7 +118,7 @@
       </div>
 
       <!-- New Story Button -->
-      <div class="hidden md:flex justify-start px-4 cursor-pointer md:px-8">
+      <div class="justify-start hidden px-4 cursor-pointer md:flex md:px-8">
         <div class="flex flex-col items-center gap-3 w-30">
           <div class="w-[90px] h-[90px] p-1 border rounded-full relative">
             <div
@@ -130,7 +131,7 @@
     </section>
 
     <!-- Stats (mobile only) -->
-    <div class="flex md:hidden py-2 flex-wrap justify-around gap-6 text-sm">
+    <div class="flex flex-wrap justify-around gap-6 py-2 text-sm md:hidden">
       <div class="flex flex-col items-center">
         <span class="font-semibold">{{ posts.length }}</span>
         <span class="text-[#737373]">post</span>
@@ -146,8 +147,8 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <nav class="flex border-t md:border-none justify-center">
-      <ul class="flex w-full md:w-auto gap-6 md:gap-16">
+    <nav class="flex justify-center border-t md:border-none">
+      <ul class="flex w-full gap-6 md:w-auto md:gap-16">
         <li class="flex-1">
           <button
             @click="activeTab = 'posts'"
@@ -216,9 +217,9 @@
           </div>
         </div>
       </div>
-      <div v-else class="text-center py-6 flex flex-col items-center gap-5">
-        <div class="py-1 px-2 border border-black rounded-full">
-          <img class="w-14 h-16" :src="camera_icon" alt="" />
+      <div v-else class="flex flex-col items-center gap-5 py-6 text-center">
+        <div class="px-2 py-1 border border-black rounded-full">
+          <img class="h-16 w-14" :src="camera_icon" alt="" />
         </div>
         <h2 class="text-4xl font-bold">No Posts Yet</h2>
       </div>
@@ -267,6 +268,7 @@ const user = ref([]);
 const posts = ref([]);
 const followers = ref(0);
 const isFollowing = ref(false);
+const isPostLoading = ref(false);
 
 // Reactive's For PostModal
 const previewPost = ref(false);
@@ -284,14 +286,14 @@ async function fetchUser(id) {
       `http://localhost:8000/api/user/profile/${id}`,
       {
         withCredentials: true,
-      }
+      },
     );
 
     user.value = response.data.user;
     posts.value = response.data.posts;
     followers.value = response.data.user.followers.length;
     isFollowing.value = response.data.user.followers.includes(
-      authStore.getUser.id
+      authStore.getUser.id,
     );
   } catch (error) {
     console.error("Failed to fetch user:", error);
@@ -302,7 +304,7 @@ async function followUser() {
   const response = await axios.post(
     `http://localhost:8000/api/user/follow/${user.value.id}`,
     null,
-    { withCredentials: true }
+    { withCredentials: true },
   );
 
   if (response.data.success) {
@@ -315,7 +317,7 @@ async function unfollowUser() {
   const response = await axios.post(
     `http://localhost:8000/api/user/unfollow/${user.value.id}`,
     null,
-    { withCredentials: true }
+    { withCredentials: true },
   );
 
   if (response.data.success) {
@@ -324,14 +326,21 @@ async function unfollowUser() {
   }
 }
 
-async function handlePostClick(post) {
-  const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-    withCredentials: true,
-  });
-  selectedPost.value = res.data.post;
-  previewPost.value = true;
-}
 
+async function handlePostClick(post) {
+  isPostLoading.value = true;
+  try {
+    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
+      withCredentials: true,
+    });
+    selectedPost.value = res.data.post;
+    previewPost.value = true;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isPostLoading.value = false;
+  }
+}
 function resetCreatePost() {
   previewPost.value = false;
   selectedPost.value = null;

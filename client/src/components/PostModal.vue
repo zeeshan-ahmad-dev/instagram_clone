@@ -218,7 +218,7 @@ async function toggleLike() {
   isLiked.value = !isLiked.value;
   likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   try {
-    await axios.patch(`http://localhost:8000/api/post/like/${props.post._id}`, null, { withCredentials: true });
+    await axios.patch(`http://localhost:8000/api/post/${isLiked.value ? 'like' : 'unlike'}/${props.post._id}`, null, { withCredentials: true });
   } catch (error) {
     console.log(error);
     isLiked.value = !isLiked.value;
@@ -246,6 +246,7 @@ async function postComment() {
 }
 
 function resetCreatePost() {
+  console.log("clone")
   emit("close");
   isLiked.value = false;
   likes.value = 0;

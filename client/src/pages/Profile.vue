@@ -4,9 +4,8 @@
     <PostModal
       :post="selectedPost"
       :visible="previewPost"
+      :is-post-loading="isPostLoading"
       @close="resetCreatePost"
-      aria-modal="true"
-      tabIndex="1"
     />
 
     <main
@@ -285,6 +284,7 @@ const selectedPost = ref(null);
 const isMoreActive = ref(false);
 const isLoading = ref(false);
 const currentPosts = ref(authStore.getPosts || []);
+const isPostLoading = ref(false);
 
 watch(activeTab, async (newTab) => {
   console.log("hi")
@@ -297,6 +297,11 @@ watch(activeTab, async (newTab) => {
 
 function handleMoreBtnClick() {
   isMoreActive.value = !isMoreActive.value;
+}
+
+function resetCreatePost() {
+  previewPost.value = false;
+  selectedPost.value = null;
 }
 
 function handleKeyUp(e) {
@@ -372,16 +377,18 @@ async function handleProfileSave({ bio, profilePicture }) {
 }
 
 async function handlePostClick(post) {
-  const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-    withCredentials: true,
-  });
-  selectedPost.value = res.data.post;
-  previewPost.value = true;
-}
-
-function resetCreatePost() {
-  previewPost.value = false;
-  selectedPost.value = null;
+  isPostLoading.value = true;
+  try {
+    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
+      withCredentials: true,
+    });
+    selectedPost.value = res.data.post;
+    previewPost.value = true;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isPostLoading.value = false;
+  }
 }
 </script>
 

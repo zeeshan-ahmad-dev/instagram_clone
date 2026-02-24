@@ -193,35 +193,19 @@ function previewPost() {
 
 // Handles like/unlike logic and UI updates
 async function likePost() {
-  if (
-    props.post.likes.includes(authStore.getUser.id) ||
-    isLiked.value === true
-  ) {
+  isLiked.value = !isLiked.value;
+  likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
+  try {
     const response = await axios.patch(
-      `http://localhost:8000/api/post/unlike/${props.post._id}`,
+      `http://localhost:8000/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
       null,
       {
         withCredentials: true,
       },
     );
-
-    if (response.data.success) {
-      isLiked.value = false;
-      likes.value = likes.value - 1;
-    }
-  } else {
-    const response = await axios.patch(
-      `http://localhost:8000/api/post/like/${props.post._id}`,
-      null,
-      {
-        withCredentials: true,
-      },
-    );
-
-    if (response.data.success) {
-      isLiked.value = true;
-      likes.value = likes.value + 1;
-    }
+  } catch (error) {
+    isLiked.value = !isLiked.value;
+    likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   }
 }
 

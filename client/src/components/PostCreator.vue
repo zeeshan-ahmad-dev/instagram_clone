@@ -82,13 +82,13 @@
       </div>
       <!-- content -->
       <div v-if="!isSharing && !hasPostFailed && !isPostCreated" class="h-full">
-        <div v-if="selectedImage" class="h-full flex">
+        <div v-if="selectedImage" class="flex h-full">
           <!-- TODO: Add some image customization -->
           <div
-            class="flex items-end justify-center h-full flex-1 text-center bg-cover overflow-hidden rounded-bl-md"
+            class="flex items-end justify-center flex-1 h-full overflow-hidden text-center bg-cover rounded-bl-md"
             :style="{ backgroundImage: `url(${selectedImage})` }"
           >
-            <div v-if="!isNextStep" class="flex p-4 w-full justify-between">
+            <div v-if="!isNextStep" class="flex justify-between w-full p-4">
               <div class="flex gap-2">
                 <button class="center bg-[#484848] p-2 rounded-full">
                   <img class="w-5" :src="fullScreenIcon" alt="" />
@@ -104,7 +104,7 @@
           </div>
           <!-- Caption & user details (right section in next step) -->
           <div v-if="isNextStep" class="flex-grow-[0.3] h-full">
-            <div class="p-3 flex gap-2 items-center">
+            <div class="flex items-center gap-2 p-3">
               <div>
                 <img
                   class="object-cover rounded-full size-8 md:size-7"
@@ -117,11 +117,11 @@
               }}</span>
             </div>
             <div
-              class="flex items-end justify-between flex-col w-full p-3 border-b"
+              class="flex flex-col items-end justify-between w-full p-3 border-b"
             >
               <div class="w-full">
                 <textarea
-                  class="w-full text-md outline-none resize-none min-h-48"
+                  class="w-full outline-none resize-none text-md min-h-48"
                   name="caption"
                   id="caption"
                   placeholder="Add a caption"
@@ -137,7 +137,7 @@
                 </button>
                 <div
                   @click="toggleInstructions"
-                  class="select-none cursor-pointer"
+                  class="cursor-pointer select-none"
                 >
                   <span>{{ captionText.length }}</span
                   >/<span>2200</span>
@@ -156,7 +156,7 @@
               </div>
             </div>
             <!-- Footer note -->
-            <div class="text-xs text-center text-gray-400 italic px-3 pb-2">
+            <div class="px-3 pb-2 text-xs italic text-center text-gray-400">
               Collaboration, location & tag features coming soon...
             </div>
           </div>
@@ -164,7 +164,7 @@
         <!-- No image selected yet -->
         <div
           v-else
-          class="flex items-center justify-center flex-1 text-center h-full"
+          class="flex items-center justify-center flex-1 h-full text-center"
         >
           <div
           @dragover.prevent="onDragOver" 
@@ -209,10 +209,10 @@
       <!-- Upload in progress -->
       <div
         v-else-if="isSharing && !hasPostFailed && !isPostCreated"
-        class="center h-full"
+        class="h-full center"
       >
         <div
-          class="insta-gradient animate-spin text-white rounded-full size-24 flex items-center justify-center relative"
+          class="relative flex items-center justify-center text-white rounded-full insta-gradient animate-spin size-24"
         >
           <div class="absolute z-0 rounded-full size-[5.4rem] bg-white"></div>
           <div class="z-10"></div>
@@ -222,7 +222,7 @@
       <!-- Upload Failed -->
       <div
         v-else-if="!isSharing && hasPostFailed && !isPostCreated"
-        class="flex items-center justify-center flex-1 text-center h-full"
+        class="flex items-center justify-center flex-1 h-full text-center"
       >
         <div class="flex flex-col items-center gap-4">
           <img
@@ -245,7 +245,7 @@
       <!-- Upload Successfull -->
       <div
         v-else-if="!isSharing && !hasPostFailed && isPostCreated"
-        class="flex items-center justify-center flex-1 text-center h-full"
+        class="flex items-center justify-center flex-1 h-full text-center"
       >
         <div class="flex flex-col items-center gap-4">
           <img
@@ -264,7 +264,6 @@
 
 <script setup>
 // Icons
-import imgVideoIcon from "@/assets/icons/img_video_icon.svg";
 import leftArrowIcon from "@/assets/icons/arrow-thin-left-icon.svg";
 import copyIcon from "@/assets/icons/copy.png";
 import zoomIcon from "@/assets/icons/zoom.svg";

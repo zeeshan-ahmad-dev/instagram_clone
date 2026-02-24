@@ -212,15 +212,14 @@ watch(
 
 // Like/Unlike logic
 async function toggleLike() {
-  const url = isLiked.value
-    ? `http://localhost:8000/api/post/unlike/${props.post._id}`
-    : `http://localhost:8000/api/post/like/${props.post._id}`;
-
-  const response = await axios.patch(url, null, { withCredentials: true });
-
-  if (response.data.success) {
+  isLiked.value = !isLiked.value;
+  likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
+  try {
+    await axios.patch(`http://localhost:8000/api/post/like/${props.post._id}`, null, { withCredentials: true });
+  } catch (error) {
+    console.log(error);
     isLiked.value = !isLiked.value;
-    likes.value += isLiked.value ? 1 : -1;
+    likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   }
 }
 

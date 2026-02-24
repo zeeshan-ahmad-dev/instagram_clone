@@ -42,7 +42,9 @@
             <div
               class="relative flex items-center justify-center text-white rounded-full insta-gradient size-20"
             >
-              <div class="absolute z-0 rounded-full size-[4.5rem] bg-white"></div>
+              <div
+                class="absolute z-0 rounded-full size-[4.5rem] bg-white"
+              ></div>
               <div class="z-10">
                 <img
                   class="relative rounded-full size-16"
@@ -68,7 +70,10 @@
       </div>
 
       <!-- Posts Section -->
-      <section class="w-full py-6 px- md:px-16 lg:px-40 xl:px-16">
+      <section class="w-full py-6 md:px-16 lg:px-40 xl:px-16">
+        <div v-if="isLoading">
+          <PostSkeleton v-for="i in 3" :key="i"/>
+        </div>
         <div v-if="allPosts.length > 0" class="space-y-5">
           <Post
             v-for="(post, index) in allPosts"
@@ -110,7 +115,12 @@
             :username="user.username"
             :fullName="user.fullName"
             :isFollowing="user.followers.includes(authStore.getUser.id)"
-            :onButtonClick="() => user.followers.includes(authStore.getUser.id) ? unfollowUser(user) : followUser(user)"
+            :onButtonClick="
+              () =>
+                user.followers.includes(authStore.getUser.id)
+                  ? unfollowUser(user)
+                  : followUser(user)
+            "
           />
         </div>
 
@@ -120,7 +130,6 @@
     </aside>
   </main>
 </template>
-
 
 <script setup>
 // Icons import
@@ -139,6 +148,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import axios from "axios";
 // Utils Import
 import { getProfileImageUrl } from "@/utils/imageHelpers";
+import PostSkeleton from "@/components/posts/PostSkeleton.vue";
 
 const stories = [
   {
@@ -161,7 +171,7 @@ const stories = [
   },
   {
     story: 4,
-  }
+  },
 ];
 
 const authStore = useAuthStore();
@@ -174,6 +184,7 @@ const showPrevBtn = ref(false);
 const scrollLeft = ref(0);
 const suggestedUsers = ref([]);
 const allPosts = ref([]);
+const isLoading = ref(false);
 
 // Reactive States for postModal
 const previewPost = ref(false);
@@ -187,6 +198,7 @@ function handleKeyUp(e) {
 
 onMounted(async () => {
   window.addEventListener("keyup", handleKeyUp);
+  isLoading.value = true;
 
   const [postResponse, userResponse] = await Promise.all([
     axios.get("http://localhost:8000/api/post/", { withCredentials: true }),
@@ -195,8 +207,10 @@ onMounted(async () => {
 
   allPosts.value = postResponse.data.posts;
   suggestedUsers.value = userResponse.data.users;
-  suggestedUsers.value = suggestedUsers.value.filter((user) => user._id !== authStore.getUser.id)
-
+  suggestedUsers.value = suggestedUsers.value.filter(
+    (user) => user._id !== authStore.getUser.id,
+  );
+  isLoading.value = false;
 });
 
 onBeforeUnmount(() => {

@@ -22,6 +22,7 @@ const upload = multer({ storage });
 
 postRoute.get('/', postController.getAllPosts)
 postRoute.get('/user/:userId', postController.getPostsByUserId)
+postRoute.get('/saved/:userId', postController.getSavedPosts)
 postRoute.get('/:postId', postController.getPostById)
 postRoute.post('/add', upload.single('image'), postController.createPost)
 postRoute.delete('/delete/:postId', postController.deletePost)

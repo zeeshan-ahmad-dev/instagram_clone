@@ -86,6 +86,23 @@ class PostController {
     }
   }
 
+  async getSavedPosts(req, res) {
+    console.log("Hi")
+    const userId = req.params.userId;
+    console.log(userId)
+    try {
+      const posts = await PostService.getSavedPost(userId);
+
+      console.log(posts)
+      res
+        .status(200)
+        .json({ success: true, message: "Saved post Fetched successfully!", posts });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
   async getPostById(req, res) {
     const postId = req.params.postId;
     try {
@@ -152,7 +169,7 @@ class PostController {
 
       res
         .status(200)
-        .json({ success: true, message: "Post unSaved successfully!" });
+        .json({ success: true, message: "Post unsaved successfully!" });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }

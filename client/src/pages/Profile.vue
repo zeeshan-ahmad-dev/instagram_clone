@@ -211,7 +211,7 @@
         <div
           @click="handlePostClick(post)"
           v-if="authStore.getPosts.length > 0"
-          v-for="(post, index) in authStore.getPosts"
+          v-for="(post, index) in currentPosts"
           :key="index"
           class="aspect-[3/4] w-full cursor-pointer bg-cover group"
           :style="{
@@ -262,7 +262,7 @@ import Footer from "@/components/Footer.vue";
 import EditProfileModal from "@/components/EditProfile.vue";
 import PostModal from "@/components/PostModal.vue";
 // Vues components import
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 // Stores import
 import { useAuthStore } from "@/store/AuthStore";
 // third party imports
@@ -279,6 +279,16 @@ const showEditModal = ref(false);
 const previewPost = ref(false);
 const selectedPost = ref(null);
 const isMoreActive = ref(false);
+const currentPosts = ref(authStore.getPosts || []);
+
+watch(activeTab, async (newTab) => {
+  console.log("hi")
+  if (newTab === "saved") {
+    currentPosts.value = await fetchSavedPosts();
+  } else {
+    currentPosts.value = authStore.getPosts;
+  }
+})
 
 function handleMoreBtnClick() {
   isMoreActive.value = !isMoreActive.value;
@@ -287,6 +297,17 @@ function handleMoreBtnClick() {
 function handleKeyUp(e) {
   if (e.key === "Escape" && previewPost.value) {
     resetCreatePost();
+  }
+}
+
+async function fetchSavedPosts() {
+  try {
+    const res = await axios.get(`http://localhost:8000/api/post/saved/${authStore.getUser.id}`, {withCredentials: true})
+    console.log(res)
+
+    return res.data.posts;
+  } catch (error) {
+    console.log(error);
   }
 }
 

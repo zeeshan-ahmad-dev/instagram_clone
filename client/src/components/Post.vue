@@ -211,7 +211,7 @@ async function likePost() {
     }
   } else {
     const response = await axios.patch(
-      `http://localhost:8000/api/post/likepr/${ops.post._id}`,
+      `http://localhost:8000/api/post/like/${ops.post._id}`,
       null,
       {
         withCredentials: true,
@@ -225,12 +225,12 @@ async function likePost() {
   }
 }
 
-// Handles like/unlike logic and UI updates
+// Handles save/unsave logic and UI updates
 async function toggleSavedPost() {
   const previousState = isSaved.value;
   isSaved.value = !isSaved.value;
   try {
-    if (!isSaved) {
+    if (!isSaved.value) {
       await axios.patch(
         `http://localhost:8000/api/post/save/${props.post._id}`,
         null,

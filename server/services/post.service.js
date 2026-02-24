@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const User = require("../models/users");
 
 const PostService = {
   async createPost(req, imageUrl, caption) {
@@ -81,6 +82,18 @@ const PostService = {
       return posts;
     } catch (error) {
       throw new Error("Failed to get post");
+    }
+  },
+
+  async getSavedPost(userId) {
+    console.log(userId)
+    try {
+      const user = await User.findById(userId).populate('savedPosts');
+
+      console.log(user)
+      return user.savedPosts;
+    } catch (error) {
+      throw error;
     }
   },
 

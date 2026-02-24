@@ -118,15 +118,14 @@ const UserService = {
 
   async savePost(req, postId) {
     try {
-      const user = await User.findById(req.user.id);
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { $addToSet: { savedPosts: postId } },
+        { new: true },
+      );
+
       if (!user) throw new Error("User not found!");
 
-      if (user.savedPosts.some((id) => id.toString() === postId)) {
-        throw new Error("Post is already Saved!");
-      }
-
-      user.savedPosts.push(postId);
-      await user.save();
       return user;
     } catch (error) {
       throw error;
@@ -134,16 +133,14 @@ const UserService = {
   },
 
   async unSavePost(req, postId) {
-  const user = await User.findById(req.user.id);
-  if (!user) throw new Error("User not found!");
+    const user = await User.findByIdAndUpdate(req.user.id,
+      { $pull: { savedPosts: postId } },
+      { new: true }
+    );
+    if (!user) throw new Error("User not found!");
 
-  user.savedPosts = user.savedPosts.filter(
-    id => id.toString() !== postId
-  );
-
-  await user.save();
-  return user;
-}
+    return user;
+  },
 };
 
 module.exports = {

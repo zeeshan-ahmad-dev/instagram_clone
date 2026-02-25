@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="flex flex-col min-h-screen">
     <section
-    class="flex flex-col items-center gap-3 py-3 flex-grow md:justify-center lg:py-6 text-center px-auto"
+      class="flex flex-col items-center flex-grow gap-3 py-3 text-center md:justify-center lg:py-6 px-auto"
     >
       <div
         class="sm:w-[80vw] lg:w-[26vw] md:w-[45vw] flex flex-col items-center px-11 sm:border py-6 md:py-10"
@@ -28,78 +28,95 @@
         <!-- Inputs  -->
         <div>
           <div class="space-y-[0.4rem]">
-            <label
-              class="relative h-[50px] md:h-[36px] flex group w-full bg-[#FAFAFA] rounded-sm border px-2 focus group focus-within:border-gray-400"
-            >
-              <span
-                class="absolute left-2 md:h-[18px] top-3 md:top-2 text-[#737373] text-[16px] md:text-[12px] text-ellipsis transition-all duration-200 transform group-has-[input:not(:placeholder-shown)]:scale-[0.9] md:group-has-[input:not(:placeholder-shown)]:scale-[0.83] group-has-[input:not(:placeholder-shown)]:top-[1px] group-has-[input:not(:placeholder-shown)]:left-2"
-                >Email</span
+            <div class="space-y-1">
+              <div
+                v-if="errors.email"
+                class="text-[0.6rem] text-red-500 text-start"
               >
-              <input
-                class="w-full md:text-[.7rem] h-full bg-transparent outline-none self-center group-has-[input:not(:placeholder-shown)]:self-end group-has-[input:not(:placeholder-shown)]:top-1 relative"
-                aria-required="true"
-                aria-label="Mobile Number or Email"
-                type="email"
-                id="emailOrPhone"
-                name="emailOrPhone"
-                placeholder=" "
-                v-model="email"
-              />
-            </label>
-            <label
-              class="relative h-[50px] md:h-[36px] flex group w-full bg-[#FAFAFA] rounded-sm border px-2 focus group focus-within:border-gray-400"
-            >
-              <span
-                class="absolute left-2 md:h-[18px] top-3 md:top-2 text-[#737373] text-[16px] md:text-[12px] text-ellipsis transition-all duration-200 transform group-has-[input:not(:placeholder-shown)]:scale-[0.9] md:group-has-[input:not(:placeholder-shown)]:scale-[0.83] group-has-[input:not(:placeholder-shown)]:top-[1px] group-has-[input:not(:placeholder-shown)]:left-1"
-                >Password</span
+                *{{ errors.email }}
+              </div>
+
+              <label
+                class="form-label group focus-within:border-gray-400 focus"
               >
-              <input
-                class="w-full md:text-[.7rem] h-full bg-transparent outline-none self-center group-has-[input:not(:placeholder-shown)]:self-end group-has-[input:not(:placeholder-shown)]:top-1 relative"
-                aria-required="true"
-                aria-label="Password"
-                type="text"
-                id="password"
-                name="password"
-                placeholder=" "
-                v-model="password"
-              />
-            </label>
-            <label
-              class="relative h-[50px] md:h-[36px] flex group w-full bg-[#FAFAFA] rounded-sm border px-2 focus group focus-within:border-gray-400"
-            >
-              <span
-                class="absolute left-2 md:h-[18px] top-3 md:top-2 text-[#737373] text-[16px] md:text-[12px] text-ellipsis transition-all duration-200 transform group-has-[input:not(:placeholder-shown)]:scale-[0.9] md:group-has-[input:not(:placeholder-shown)]:scale-[0.83] group-has-[input:not(:placeholder-shown)]:top-[1px] group-has-[input:not(:placeholder-shown)]:left-1"
-                >Full Name</span
+                <span class="form-input-span"> Email </span>
+                <input
+                  class="form-input"
+                  type="email"
+                  placeholder=" "
+                  v-model="email"
+                />
+              </label>
+            </div>
+            <div class="space-y-1">
+              <div
+                v-if="errors.password"
+                class="text-[0.6rem] text-red-500 text-start"
               >
-              <input
-                class="w-full md:text-[.7rem] h-full bg-transparent outline-none self-center group-has-[input:not(:placeholder-shown)]:self-end group-has-[input:not(:placeholder-shown)]:top-1 relative"
-                aria-required="true"
-                aria-label="Full Name"
-                type="text"
-                id="fullName"
-                name="fullName"
-                placeholder=" "
-                v-model="fullName"
-              />
-            </label>
-            <label
-              class="relative h-[50px] md:h-[36px] flex group w-full bg-[#FAFAFA] rounded-sm border px-2 focus group focus-within:border-gray-400"
-            >
-              <span
-                class="absolute left-2 md:h-[18px] top-3 md:top-2 text-[#737373] text-[16px] md:text-[12px] text-ellipsis transition-all duration-200 transform group-has-[input:not(:placeholder-shown)]:scale-[0.9] md:group-has-[input:not(:placeholder-shown)]:scale-[0.83] group-has-[input:not(:placeholder-shown)]:top-[1px] group-has-[input:not(:placeholder-shown)]:left-1"
-                >username</span
+                *{{ errors.password }}
+              </div>
+              <label
+                class="form-label group focus-within:border-gray-400 focus"
               >
-              <input
-                class="w-full md:text-[.7rem] h-full bg-transparent outline-none self-center group-has-[input:not(:placeholder-shown)]:self-end group-has-[input:not(:placeholder-shown)]:top-1 relative"
-                aria-required="true"
-                aria-label="username"
-                type="text"
-                id="username"
-                name="username"
-                placeholder=" "
-                v-model="username"
-              />
-            </label>
+                <span class="form-input-span">Password</span>
+                <input
+                  class="form-input"
+                  aria-required="true"
+                  aria-label="Password"
+                  type="text"
+                  id="password"
+                  name="password"
+                  placeholder=" "
+                  v-model="password"
+                />
+              </label>
+            </div>
+            <div class="space-y-1">
+              <div
+                v-if="errors.fullName"
+                class="text-[0.6rem] text-red-500 text-start"
+              >
+                *{{ errors.fullName }}
+              </div>
+              <label
+                class="form-label group focus-within:border-gray-400 focus"
+              >
+                <span class="form-input-span">Full Name</span>
+                <input
+                  class="form-input"
+                  aria-required="true"
+                  aria-label="Full Name"
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  placeholder=" "
+                  v-model="fullName"
+                />
+              </label>
+            </div>
+            <div class="space-y-1">
+              <div
+                v-if="errors.username"
+                class="text-[0.6rem] text-red-500 text-start"
+              >
+                *{{ errors.username }}
+              </div>
+              <label
+                class="form-label group focus-within:border-gray-400 focus"
+              >
+                <span class="form-input-span">username</span>
+                <input
+                  class="form-input"
+                  aria-required="true"
+                  aria-label="username"
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder=" "
+                  v-model="username"
+                />
+              </label>
+            </div>
           </div>
           <div class="py-4">
             <p class="mt-4 text-[12px] leading-4">
@@ -171,7 +188,7 @@ import router from "@/router";
 // Store import
 import { useAuthStore } from "@/store/AuthStore";
 // vue import
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
 const authStore = useAuthStore();
 
@@ -180,24 +197,41 @@ const password = ref("");
 const username = ref("");
 const fullName = ref("");
 
+const errors = reactive({
+  email: "",
+  password: "",
+  fullName: "",
+  username: "",
+});
+
 async function signup() {
-  const response = await axios.post(
-    "http://localhost:8000/api/user/signup",
-    {
-      username: username.value,
-      email: email.value,
-      password: password.value,
-      fullName: fullName.value,
-    },
-    {
-      withCredentials: true,
-    }
-  );
-  if (response.data.success) {
+  errors.email = "";
+  errors.password = "";
+  errors.username = "";
+  errors.fullName = "";
+  
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/user/signup",
+      {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+        fullName: fullName.value,
+      },
+      {
+        withCredentials: true,
+      },
+    );
     // Stores data after login success from backend
     authStore.login(response.data.user);
     authStore.storePosts(response.data.posts);
     router.push(`/profile/${response.data.user.username}`);
+  } catch (error) {
+    console.log(error.response)
+    if (error.response?.data?.errors) {
+      Object.assign(errors, error.response.data.errors);
+    }
   }
 }
 </script>

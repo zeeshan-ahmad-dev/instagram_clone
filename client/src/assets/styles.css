@@ -7,10 +7,19 @@
     }
     
     .center {
-        @apply flex justify-center items-center
+        @apply flex items-center justify-center;
     }
 
     .insta-gradient {
-        @apply bg-gradient-to-tr from-[#FFDC80] via-[#E1306C] via-[#FD1D1D] via-[#F56040] to-[#833AB4]
+        @apply bg-gradient-to-tr from-[#FFDC80] via-[#E1306C] via-[#FD1D1D] via-[#F56040] to-[#833AB4];
+    }
+    .form-input-span {
+        @apply absolute left-2 md:h-[18px] top-3 md:top-2 text-[#737373] text-[16px] md:text-[12px] text-ellipsis transition-all duration-200 transform group-has-[input:not(:placeholder-shown)]:scale-[0.9] md:group-has-[input:not(:placeholder-shown)]:scale-[0.83] group-has-[input:not(:placeholder-shown)]:top-[1px] group-has-[input:not(:placeholder-shown)]:left-1;
+    }
+    .form-input {
+        @apply w-full md:text-[.7rem] h-full bg-transparent outline-none self-center group-has-[input:not(:placeholder-shown)]:self-end group-has-[input:not(:placeholder-shown)]:top-1 relative;
+    }
+    .form-label {
+        @apply relative h-[50px] md:h-[36px] flex  w-full bg-[#FAFAFA] rounded-sm border px-2;
     }
 }

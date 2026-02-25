@@ -1,9 +1,8 @@
 const bcrypt = require("bcrypt");
-const User = require('../models/users');
-const { TokenController }  = require('./auth.controller');
+const User = require("../models/users");
+const { TokenController } = require("./auth.controller");
 
 const tokenController = new TokenController();
-
 
 class AuthController {
   createUser = async (req, res) => {
@@ -13,7 +12,7 @@ class AuthController {
       if (existingUser) {
         return res
           .status(400)
-          .json({ success: false, message: "Username or email already exists" });
+          .json({ success: false, errors: { email: "Email already exists" } });
       }
 
       const user = await User.create({
@@ -22,13 +21,17 @@ class AuthController {
         email,
         password,
         profilePicture,
-        facebookId: Math.floor(Math.random() * 1000000)
-      })
+        facebookId: Math.floor(Math.random() * 1000000),
+      });
 
       const token = tokenController.GenerateToken(user);
 
-      res.cookie('token', token, { httpOnly: true, secure: false, sameSite: "Lax" })
-      res.status(201).json({ 
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      });
+      res.status(201).json({
         success: true,
         message: "User create successfully!",
         user: {
@@ -40,11 +43,36 @@ class AuthController {
           followers: user.followers.length,
           following: user.following.length,
         },
-        posts: []
-     });
+        posts: [],
+      });
     } catch (error) {
-      console.log(`Error: ${error}`)
-      res.status(500).json({ success: false, message: error.message });
+      console.log(`Error: ${error}`);
+      if (error.code === 11000) {
+        const field = Object.keys(error.keyPattern)[0];
+
+        return res.status(400).json({
+          success: false,
+          errors: {
+            [field]: `${field} already exists`,
+          },
+        });
+      }
+
+      if (error.name === "validationError") {
+        let errors = {};
+
+        for (let field in error.errors) {
+          errors[field] = error.errors[field].message;
+        }
+        return res.status(400).json({
+          success: false,
+          errors,
+        });
+      }
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
     }
   };
 
@@ -52,18 +80,26 @@ class AuthController {
     const { email, password } = req.body;
     try {
       const user = await User.findOne({ email });
-      if (!user) {  
-        return res.status(404).json({ success: false, message: "User not found!" });
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, errors: {email: "Email does not exist!"} });
       }
 
-      const isMatched = await bcrypt.compare(password, user.password)
+      const isMatched = await bcrypt.compare(password, user.password);
       if (!isMatched) {
-        return res.status(401).json({ success: false, message: "Incorrect Password!" });
+        return res
+          .status(401)
+          .json({ success: false, errors: {password: "Incorrect Password!"} });
       }
 
       const token = tokenController.GenerateToken(user);
-      res.cookie('token', token, {httpOnly: true, secure: false, sameSite: 'Lax'});
-      res.status(201).json({ 
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      });
+      res.status(201).json({
         success: true,
         message: "User logedIn successfully!",
         user: {
@@ -73,25 +109,24 @@ class AuthController {
           profilePicture: user.profilePicture,
           fullName: user.fullName,
           followers: user.followers.length,
-          following: user.following.length
+          following: user.following.length,
         },
-        posts: []
-     });
-      
+        posts: [],
+      });
     } catch (error) {
-      res.status(500).json({ success: false, message: error });
+      res.status(500).json({ success: false, message: "Something went wrong!" });
     }
   };
   signOutUser = async (req, res) => {
-    res.clearCookie('token', {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: false,
-      sameSite: 'Lax'
+      sameSite: "Lax",
     });
-    res.status(200).json({success: true, message: "Logout successfully!"})
-  }
+    res.status(200).json({ success: true, message: "Logout successfully!" });
+  };
 }
 
 module.exports = {
-    AuthController
-}
+  AuthController,
+};

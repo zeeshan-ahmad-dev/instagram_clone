@@ -14,11 +14,14 @@
       />
     </div>
 
-    <div v-if="isPostLoading" class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-4xl h-[85vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"></div>
+    <div
+      v-if="isPostLoading"
+      class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-4xl h-[85vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
+    ></div>
     <!-- Container -->
     <div
       v-else
-      class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl  xl:max-w-4xl h-[85vh]  md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
+      class="relative flex flex-col md:flex-row w-full max-w-5xl md:max-w-3xl xl:max-w-4xl h-[85vh] md:h-[55vh] xl:h-[90vh] bg-white rounded-[4px] overflow-hidden"
     >
       <!-- Left Image -->
       <div class="lg:w-[60%] min-h-[40vh] lg:h-auto flex-1 bg-black">
@@ -72,7 +75,7 @@
             <div class="flex-1">
               <div class="flex flex-wrap gap-1 text-sm">
                 <router-link
-                  :to="`/${comment.user}`"
+                  :to="`/user/${comment.user}`"
                   class="font-semibold hover:underline"
                 >
                   {{ comment.username }}
@@ -120,8 +123,19 @@
                 <img class="w-6" :src="send_icon_light" alt="share" />
               </button>
             </div>
-            <button>
-              <img class="w-5" :src="save_icon" alt="save" />
+            <button @click="toggleSavedPost" class="mr-2">
+              <img
+                v-if="isSaved"
+                class="size-5"
+                :src="bookmark_light_icon"
+                alt="save"
+              />
+              <img
+                v-else
+                class="w-8 size-5"
+                :src="bookmark_dark_icon"
+                alt="save"
+              />
             </button>
           </div>
 
@@ -175,13 +189,14 @@ import three_dots_icon from "@/assets/icons/three_dots.png";
 import like_icon_light from "@/assets/icons/like_light.png";
 import like_icon_dark from "@/assets/icons/like_dark.png";
 import send_icon_light from "@/assets/icons/send_light.png";
-import save_icon from "@/assets/icons/saved.svg";
+import bookmark_light_icon from "@/assets/icons/bookmark_light.svg";
+import bookmark_dark_icon from "@/assets/icons/bookmark_dark.svg";
 
 // Props
 const props = defineProps({
   post: Object,
   visible: Boolean,
-  isPostLoading: Boolean
+  isPostLoading: Boolean,
 });
 
 // Emits
@@ -192,6 +207,7 @@ const authStore = useAuthStore();
 
 // Local state
 const isLiked = ref(false);
+const isSaved = ref(false);
 const likes = ref(0);
 const postComments = ref([]);
 const comment = ref("");
@@ -218,7 +234,11 @@ async function toggleLike() {
   isLiked.value = !isLiked.value;
   likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   try {
-    await axios.patch(`http://localhost:8000/api/post/${isLiked.value ? 'like' : 'unlike'}/${props.post._id}`, null, { withCredentials: true });
+    await axios.patch(
+      `http://localhost:8000/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
+      null,
+      { withCredentials: true },
+    );
   } catch (error) {
     console.log(error);
     isLiked.value = !isLiked.value;
@@ -227,26 +247,52 @@ async function toggleLike() {
 }
 
 async function postComment() {
-  const response = await axios.post(
-    `http://localhost:8000/api/comments/add/${props.post._id}`,
-    {
-      message: comment.value,
-      postId: props.post._id,
-      userId: authStore.getUser.id,
-      username: authStore.getUser.username,
-      pfp: authStore.getUser.profilePicture,
-    },
-    { withCredentials: true },
-  );
+  postComments.value.push({
+    message: comment.value,
+    postId: props.post._id,
+    user: authStore.getUser.id,
+    username: authStore.getUser.username,
+    profilePicture: authStore.getUser.profilePicture,
+  });
 
-  if (response.data.success) {
+  try {
+    const response = await axios.post(
+      `http://localhost:8000/api/comments/add/${props.post._id}`,
+      {
+        message: comment.value,
+        postId: props.post._id,
+        userId: authStore.getUser.id,
+        username: authStore.getUser.username,
+        pfp: authStore.getUser.profilePicture,
+      },
+      { withCredentials: true },
+    );
+  } catch (error) {
+    console.log(error);
+  } finally {
     comment.value = "";
-    postComments.value.push(response.data.comment);
+  }
+}
+
+// Handles save/unsave logic and UI updates
+async function toggleSavedPost() {
+  const previousState = isSaved.value;
+  isSaved.value = !isSaved.value;
+  try {
+    await axios.patch(
+      `http://localhost:8000/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
+      null,
+      {
+        withCredentials: true,
+      },
+    );
+  } catch (error) {
+    isSaved.value = previousState;
+    console.log(error);
   }
 }
 
 function resetCreatePost() {
-  console.log("clone")
   emit("close");
   isLiked.value = false;
   likes.value = 0;

@@ -287,7 +287,6 @@ const currentPosts = ref(authStore.getPosts || []);
 const isPostLoading = ref(false);
 
 watch(activeTab, async (newTab) => {
-  console.log("hi")
   if (newTab === "saved") {
     currentPosts.value = await fetchSavedPosts();
   } else {

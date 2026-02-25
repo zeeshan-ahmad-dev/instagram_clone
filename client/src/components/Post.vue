@@ -21,11 +21,12 @@
         <!-- Username and Time -->
         <div class="justify-self-start">
           <div class="flex items-center gap-2">
-            <span
-              @click="RouteToProfile"
+            <router-link
+              :to="`/user/${post.user._id}`"
               class="text-sm font-bold cursor-pointer"
-              >{{ post.user.username }}</span
             >
+              {{ post.user.username }}
+            </router-link>
             <div class="rounded-full bg-[#737373] size-1"></div>
             <span class="text-[#737373]">8h</span>
           </div>
@@ -76,8 +77,18 @@
         </div>
         <div>
           <button @click="toggleSavedPost" class="mr-2">
-            <img  v-if="isSaved" class="size-5" :src="bookmark_light_icon" alt="save" />
-            <img  v-else class="w-8 size-5" :src="bookmark_dark_icon" alt="save" />
+            <img
+              v-if="isSaved"
+              class="size-5"
+              :src="bookmark_light_icon"
+              alt="save"
+            />
+            <img
+              v-else
+              class="w-8 size-5"
+              :src="bookmark_dark_icon"
+              alt="save"
+            />
           </button>
         </div>
       </div>
@@ -165,7 +176,6 @@ import { useAuthStore } from "@/store/AuthStore";
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 
 const authStore = useAuthStore();
-const router = useRouter();
 
 const props = defineProps({
   post: {
@@ -214,33 +224,16 @@ async function toggleSavedPost() {
   const previousState = isSaved.value;
   isSaved.value = !isSaved.value;
   try {
-    if (!isSaved.value) {
-      await axios.patch(
-        `http://localhost:8000/api/post/save/${props.post._id}`,
-        null,
-        {
-          withCredentials: true,
-        },
-      );
-
-      authStore.loadFromStorage();
-    } else {
-      await axios.patch(
-        `http://localhost:8000/api/post/unsave/${props.post._id}`,
-        null,
-        {
-          withCredentials: true,
-        },
-      );
-    }
+    await axios.patch(
+      `http://localhost:8000/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
+      null,
+      {
+        withCredentials: true,
+      },
+    );
   } catch (error) {
     isSaved.value = previousState;
     console.log(error);
   }
-}
-
-// Navigate to the user's profile page
-function RouteToProfile() {
-  router.push(`/${props.post.user._id}`);
 }
 </script>

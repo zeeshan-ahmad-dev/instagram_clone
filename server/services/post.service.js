@@ -86,11 +86,9 @@ const PostService = {
   },
 
   async getSavedPost(userId) {
-    console.log(userId)
     try {
       const user = await User.findById(userId).populate('savedPosts');
 
-      console.log(user)
       return user.savedPosts;
     } catch (error) {
       throw error;

@@ -20,13 +20,10 @@ class CommentController {
             const { message, postId, userId, username, pfp } = req.body;
             const result = await CommentService.addComment(message, postId, userId, username, pfp);
             
-            if (!result.success) {
-                return res.status(400).json(result);
-            }
-
-            return res.status(201).json({ success: result.success, message: result.message, comment: result.comment });
+            res.status(201).json({ success: result.success, message: result.message, comment: result.comment });
         } catch (error) {
-            return res.status(500).json({ success: false, message: error.message });
+            console.log(error)
+            res.status(500).json({ success: false, message: error.message });
         }
     }
     async editComment(req, res) {

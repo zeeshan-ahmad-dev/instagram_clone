@@ -87,13 +87,10 @@ class PostController {
   }
 
   async getSavedPosts(req, res) {
-    console.log("Hi")
     const userId = req.params.userId;
-    console.log(userId)
     try {
       const posts = await PostService.getSavedPost(userId);
 
-      console.log(posts)
       res
         .status(200)
         .json({ success: true, message: "Saved post Fetched successfully!", posts });

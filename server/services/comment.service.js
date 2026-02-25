@@ -11,7 +11,7 @@ const Commentservices = {
 
             return { success: true, message: 'Comment fetched successfully!', comments };
         } catch (error) {
-            throw new Error("Internal server error")
+            throw error;
         }
     },
     async addComment(message, postId, userId, username, profilePicture) {
@@ -26,14 +26,14 @@ const Commentservices = {
                     profilePicture,
                 }),
             ]);
-            if (!comment) return { success: false, message: 'Unable to post comment!' }
 
             post.comments.push(comment._id);
             await post.save();
 
             return { success: true, message: 'Comment added successfully!', comment };
         } catch (error) {
-            throw new Error("Internal server error")
+            console.log(error)
+            throw error;
         }
     }
 }

@@ -21,13 +21,11 @@ class PostController {
           .status(500)
           .json({ success: false, message: "Error creating post!" });
 
-      res
-        .status(201)
-        .json({
-          success: true,
-          message: "Post created successfully!",
-          post: post,
-        });
+      res.status(201).json({
+        success: true,
+        message: "Post created successfully!",
+        post: post,
+      });
     } catch (error) {
       console.error("Error creating post:", error.message);
       return res
@@ -62,8 +60,12 @@ class PostController {
   }
 
   async getAllPosts(req, res) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
     try {
-      const posts = await PostService.getAllPosts();
+      const posts = await PostService.getAllPosts(limit, skip);
       res
         .status(200)
         .json({ success: true, message: "Post edited successfully!", posts });
@@ -93,7 +95,11 @@ class PostController {
 
       res
         .status(200)
-        .json({ success: true, message: "Saved post Fetched successfully!", posts });
+        .json({
+          success: true,
+          message: "Saved post Fetched successfully!",
+          posts,
+        });
     } catch (error) {
       console.log(error);
       res.status(500).json({ success: false, message: error.message });
@@ -118,13 +124,11 @@ class PostController {
     try {
       const updatedPost = await PostService.likePost(req, postId);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Post Liked successfully!",
-          post: updatedPost,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Post Liked successfully!",
+        post: updatedPost,
+      });
     } catch (error) {
       res.status(403).json({ success: false, message: error.message });
     }
@@ -135,13 +139,11 @@ class PostController {
     try {
       const updatedPost = await PostService.unlikePost(req, postId);
 
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: "Post UnLiked successfully!",
-          post: updatedPost,
-        });
+      res.status(200).json({
+        success: true,
+        message: "Post UnLiked successfully!",
+        post: updatedPost,
+      });
     } catch (error) {
       res.status(403).json({ success: false, message: error.message });
     }

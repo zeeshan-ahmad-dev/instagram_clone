@@ -82,7 +82,11 @@
             :key="post._id"
             :post="post"
           />
-          <CaughtUpMessage />
+          <div ref="loadMoreTrigger" class="h-2"></div>
+          <div v-if="isFetchingMore" class="flex justify-center py-4">
+            <div class="w-6 h-6 border-4 border-gray-200 rounded-full loader border-t-gray-500 animate-spin"></div>
+          </div>
+          <CaughtUpMessage v-else />
         </div>
         <NoPosts v-else />
       </section>
@@ -182,7 +186,6 @@ const authStore = useAuthStore();
 
 // Reactive States
 const storyContainer = ref(null);
-const storyItem = ref(null);
 const showNextBtn = ref(true);
 const showPrevBtn = ref(false);
 const scrollLeft = ref(0);
@@ -195,31 +198,78 @@ const isPostLoading = ref(false);
 const previewPost = ref(false);
 const selectedPost = ref(null);
 
+// Loading triggering more posts on scroll
+let page = 1;
+const limit = 4;
+const hasMore = ref(true);
+const isFetchingMore = ref(false);
+const loadMoreTrigger = ref(null);
+let observer = null;
+
 function handleKeyUp(e) {
   if (e.key === "Escape" && previewPost.value) {
     resetCreatePost();
   }
 }
 
+async function fetchPosts() {
+  console.log("start",page);
+  if (isFetchingMore.value || !hasMore.value) return;
+  isFetchingMore.value = true;
+
+  try {
+    const postResponse = await axios.get(`http://localhost:8000/api/post?page=${page}&limit=${limit}`, { withCredentials: true, });
+
+    allPosts.value.push(...postResponse.data.posts);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isFetchingMore.value = false;
+  }
+  console.log("end",page);
+  page++;
+}
+
 onMounted(async () => {
-  window.addEventListener("keyup", handleKeyUp);
   isLoading.value = true;
-
-  const [postResponse, userResponse] = await Promise.all([
-    axios.get("http://localhost:8000/api/post/", { withCredentials: true }),
-    axios.get("http://localhost:8000/api/user", { withCredentials: true }),
-  ]);
-
-  allPosts.value = postResponse.data.posts;
-  suggestedUsers.value = userResponse.data.users;
-  suggestedUsers.value = suggestedUsers.value.filter(
-    (user) => user._id !== authStore.getUser.id,
-  );
+  window.addEventListener("keyup", handleKeyUp);
+  await fetchPosts();
   isLoading.value = false;
+
+  try {
+    const res = await axios.get("http://localhost:8000/api/user", {
+      withCredentials: true,
+    });
+    suggestedUsers.value = res.data.users;
+    suggestedUsers.value = suggestedUsers.value.filter(
+      (user) => user._id !== authStore.getUser.id,
+    );
+  } catch (error) {
+    console.log(error)
+  }
+  observer = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+
+      if (entry.isIntersecting) {
+        fetchPosts();
+      }
+    },
+    { root: null, threshold: 0.5 },
+  );
+
+  if (loadMoreTrigger.value) observer.observe(loadMoreTrigger.value);
+});
+
+onMounted(() => {
+  
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("keyup", handleKeyUp);
+  if (observer && loadMoreTrigger.value) {
+    observer.unobserve(loadMoreTrigger.value);
+  }
 });
 
 const isAtStart = () => {

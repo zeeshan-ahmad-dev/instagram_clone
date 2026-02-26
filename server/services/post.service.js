@@ -51,34 +51,37 @@ const PostService = {
     }
   },
 
-  async getAllPosts() {
+  async getAllPosts(limit, skip) {
     try {
-      Comment.find({});
       const posts = await Post.find({})
-      .populate({
-        path: 'user',
-        select: 'username profilePicture'
-      })
-      .populate({
-        path: 'comments',
-        select: 'text user',
-        populate: {
-          path: 'user',
-          select: 'username profilePicture'
-        },
-      });
-      if (!posts) throw new Error("Post not found!");
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: "user",
+          select: "username profilePicture",
+        })
+        .populate({
+          path: "comments",
+          select: "text user createdAt",
+          options: { sort: { createdAt: -1 } },
+          populate: {
+            path: "user",
+            select: "username profilePicture",
+          },
+        })
+        .lean();
+      if (!posts) throw new Error("Post not found!", 404);
 
       return posts;
     } catch (error) {
       console.error("Original error in getAllPosts:", error);
-      throw new Error("Failed to get all posts");
+      throw error;
     }
   },
 
   async getPostsByUserId(userId) {
     try {
-      const posts = await Post.find({user: userId});
+      const posts = await Post.find({ user: userId });
       return posts;
     } catch (error) {
       throw new Error("Failed to get post");
@@ -87,7 +90,7 @@ const PostService = {
 
   async getSavedPost(userId) {
     try {
-      const user = await User.findById(userId).populate('savedPosts');
+      const user = await User.findById(userId).populate("savedPosts");
 
       return user.savedPosts;
     } catch (error) {
@@ -98,18 +101,18 @@ const PostService = {
   async getPostById(postId) {
     try {
       const post = await Post.findById(postId)
-      .populate({
-        path: 'user',
-        select: 'username profilePicture'
-      })
-      .populate({
-        path: 'comments',
-        select: 'text user',
-        populate: {
-          path: 'user',
-          select: 'username profilePicture'
-        },
-      });
+        .populate({
+          path: "user",
+          select: "username profilePicture",
+        })
+        .populate({
+          path: "comments",
+          select: "text user",
+          populate: {
+            path: "user",
+            select: "username profilePicture",
+          },
+        });
       if (!post) throw new Error("Post not found!");
 
       return post;
@@ -139,13 +142,13 @@ const PostService = {
       const post = await Post.findById(postId);
       if (!post) throw new Error("Post not found!");
 
-      post.likes = post.likes.filter(id => !id.equals(req.user.id));
+      post.likes = post.likes.filter((id) => !id.equals(req.user.id));
       await post.save();
       return post;
     } catch (error) {
       throw new Error("Failed to get post");
     }
   },
-}
+};
 
 module.exports = PostService;

@@ -204,7 +204,7 @@
       <section
         :class="[
           'gap-1 py-4',
-          !isLoading ? 'grid grid-cols-3' : '',
+          !isLoading && currentPosts.length > 0 ? 'grid grid-cols-3' : '',
         ]"
       >
         <div v-if="isLoading" class="flex items-center justify-center w-full h-[20vh]">

@@ -187,9 +187,9 @@ const props = defineProps({
 const emit = defineEmits(["preview-post"]);
 
 const commentText = ref("");
-const isLiked = ref(props.post.likes.includes(authStore.getUser.id));
+const isLiked = ref(props.post?.likes?.includes(authStore.getUser.id));
 const likes = ref(props.post.likes.length);
-const isSaved = ref(!authStore.getUser.savedPosts.includes(props.post._id));
+const isSaved = ref(!authStore.getUser.savedPosts?.includes(props.post._id));
 const showMore = ref(false);
 
 // Emit preview-post event to show full post view

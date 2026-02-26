@@ -83,8 +83,10 @@
                 <p>{{ comment.text }}</p>
               </div>
               <div class="flex items-center gap-4 mt-1 text-xs text-gray-500">
-                <span>3w</span>
-                <button class="hover:underline">56 likes</button>
+                <span>{{ formatTimeAgo(comment.createdAt) }}</span>
+                <button class="hover:underline">
+                  {{ Math.floor(Math.random() * 20) }} likes
+                </button>
                 <button class="hover:underline">Reply</button>
               </div>
             </div>
@@ -141,7 +143,7 @@
 
           <div class="text-sm">
             <p class="font-semibold">{{ likes }} likes</p>
-            <p class="text-xs text-gray-500">47 minutes ago</p>
+            <p class="text-xs text-gray-500">{{ postCreatedAt }}</p>
           </div>
 
           <div class="flex items-center pt-2 space-x-2 border-t">
@@ -180,7 +182,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/store/AuthStore";
 import { getProfileImageUrl } from "@/utils/imageHelpers";
@@ -191,6 +193,7 @@ import like_icon_dark from "@/assets/icons/like_dark.png";
 import send_icon_light from "@/assets/icons/send_light.png";
 import bookmark_light_icon from "@/assets/icons/bookmark_light.svg";
 import bookmark_dark_icon from "@/assets/icons/bookmark_dark.svg";
+import { formatTimeAgo } from "@/utils/timeAgo";
 
 // Props
 const props = defineProps({
@@ -211,12 +214,15 @@ const isSaved = ref(false);
 const likes = ref(0);
 const postComments = ref([]);
 const comment = ref("");
+const postCreatedAt = ref("0s");
 
 // Fetch post comments and set data
 watch(
   () => props.post,
   async (newPost) => {
     if (newPost) {
+      postCreatedAt.value = formatTimeAgo(props.post?.createdAt);
+
       const response = await axios.get(
         `http://localhost:8000/api/comments/${newPost._id}`,
         { withCredentials: true },

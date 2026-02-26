@@ -49,7 +49,7 @@
               <div class="z-10">
                 <img
                   class="relative rounded-full size-16"
-                  src="https://i.pinimg.com/236x/68/31/12/68311248ba2f6e0ba94ff6da62eac9f6.jpg"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvY6JTyXURaXSALU_6PoyG0fuZMvRaSlm6Kw&s"
                   alt="Story"
                 />
               </div>
@@ -178,7 +178,7 @@ const stories = [
     story: 4,
   },
   {
-    story: 4,
+    story: 5,
   },
 ];
 
@@ -213,7 +213,6 @@ function handleKeyUp(e) {
 }
 
 async function fetchPosts() {
-  console.log("start",page);
   if (isFetchingMore.value || !hasMore.value) return;
   isFetchingMore.value = true;
 

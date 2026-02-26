@@ -28,7 +28,7 @@
               {{ post.user.username }}
             </router-link>
             <div class="rounded-full bg-[#737373] size-1"></div>
-            <span class="text-[#737373]">8h</span>
+            <span class="text-[#737373] text-sm font-medium">{{postCreatedAt}}</span>
           </div>
           <div class="text-xs">
             <span>Original audio</span>
@@ -170,10 +170,10 @@ import smile_face_icon from "@/assets/icons/smile_face.png";
 import menu_icon from "@/assets/icons/menu_icon.svg";
 import comment_icon from "@/assets/icons/comment.svg";
 import axios from "axios";
-import { ref, defineProps, defineEmits } from "vue";
-import { useRouter } from "vue-router";
+import { ref, defineProps, defineEmits, onMounted } from "vue";
 import { useAuthStore } from "@/store/AuthStore";
 import { getProfileImageUrl } from "@/utils/imageHelpers";
+import { formatTimeAgo } from "@/utils/timeAgo";
 
 const authStore = useAuthStore();
 
@@ -191,6 +191,7 @@ const isLiked = ref(props.post?.likes?.includes(authStore.getUser.id));
 const likes = ref(props.post.likes.length);
 const isSaved = ref(!authStore.getUser.savedPosts?.includes(props.post._id));
 const showMore = ref(false);
+const postCreatedAt = ref("0s");
 
 // Emit preview-post event to show full post view
 function previewPost() {
@@ -200,6 +201,10 @@ function previewPost() {
     postLikes: likes.value,
   });
 }
+
+onMounted(() => {
+  postCreatedAt.value = formatTimeAgo(props.post?.createdAt);
+})
 
 // Handles like/unlike logic and UI updates
 async function likePost() {

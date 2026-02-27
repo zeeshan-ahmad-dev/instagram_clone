@@ -5,12 +5,9 @@ class TokenController {
     GenerateToken(user) {
         const userPayload = {
             id: user.id,
-            username: user.username,
-            email: user.email,
-            profilePicture: user.profilePicture
         }
     
-        const token = jwt.sign(userPayload, secret, {algorithm: 'HS256', expiresIn: '12h'});
+        const token = jwt.sign(userPayload, secret, {algorithm: 'HS256', expiresIn: '24h'});
         return token;
     }
     VerifyToken(token) {

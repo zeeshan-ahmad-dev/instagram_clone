@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
-const mongoose = require('mongoose');
 const passport = require('passport');
 const usersRoute = require('./routes/usersRoutes');
 const postsRoute = require('./routes/postsRoutes');
@@ -31,8 +30,6 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT;
 

@@ -10,17 +10,7 @@ const router = express.Router();
 const authController = new AuthController();
 const profileController = new ProfileController();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/profilePics');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, uniqueSuffix + ext);
-    }
-})
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.post("/signup", authController.createUser);

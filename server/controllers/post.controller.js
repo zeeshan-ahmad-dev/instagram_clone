@@ -1,4 +1,5 @@
 const PostService = require("../services/post.service");
+const cloudinary = require("../configs/cloudinary");
 const { UserService } = require("../services/user.service");
 
 class PostController {
@@ -13,8 +14,17 @@ class PostController {
           .json({ message: "Missing required fields", success: false });
       }
 
-      const imageUrl = `/uploads/posts/${image.filename}`;
-      const post = await PostService.createPost(req, imageUrl, caption);
+      const result = await Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "insta_clone/posts" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(image.buffer);
+      });
+
+      const post = await PostService.createPost(req, result.secure_url, caption);
 
       if (!post)
         return res

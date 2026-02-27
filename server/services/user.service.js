@@ -17,7 +17,19 @@ const UserService = {
       return { success: true, user, posts };
     } catch (error) {
       console.log(error);
-      throw new Error("Failed to get the user profile");
+      throw error;
+    }
+  },
+  async getUserData(userId) {
+    try {
+      const user = await User.findById(userId);
+
+      if (!user) throw new Error("No user found!");
+
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   },
   async getMyProfile(token) {
@@ -34,7 +46,7 @@ const UserService = {
       return { success: true, user, posts };
     } catch (error) {
       console.error(error);
-      throw new Error("Failed to get user Profile");
+      throw error;
     }
   },
   async getSuggestedUsers(token) {
@@ -97,7 +109,7 @@ const UserService = {
     }
   },
 
-  async updateMyProfile(req, bio, profilePicture) {
+  async updateMyProfile(req, bio, profilePicture, publicId) {
     try {
       const user = await User.findById(req.user.id);
       const posts = Post.find({ user: req.user.id });
@@ -106,13 +118,14 @@ const UserService = {
 
       user.bio = bio || user.bio;
       user.profilePicture = profilePicture || user.profilePicture;
+      user.pfpPublicId = publicId || "";
 
       user.save();
 
       return { success: true, user, posts };
     } catch (error) {
       console.log("Updating profile actual error: ", error);
-      throw new Error("Failed to unfollow user");
+      throw error;
     }
   },
 

@@ -14,7 +14,7 @@ class PostController {
           .json({ message: "Missing required fields", success: false });
       }
 
-      const result = await Promise((resolve, reject) => {
+      const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           { folder: "insta_clone/posts" },
           (error, result) => {
@@ -37,7 +37,7 @@ class PostController {
         post: post,
       });
     } catch (error) {
-      console.error("Error creating post:", error.message);
+      console.error("Error creating post:", error);
       return res
         .status(500)
         .json({ message: "Internal server error", success: false });

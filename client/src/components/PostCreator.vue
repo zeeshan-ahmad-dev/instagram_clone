@@ -274,11 +274,11 @@ const closeIcon =
   "https://img.icons8.com/?size=100&id=95867&format=png&color=ffffff";
 // Vue's components import
 import { ref } from "vue";
-import axios from "axios";
 // Store import
 import { useAuthStore } from "@/store/AuthStore";
 // Utils
 import { getProfileImageUrl } from "@/utils/imageHelpers";
+import api from "@/api";
 
 const authStore = useAuthStore();
 
@@ -359,13 +359,9 @@ async function handleUploadPost() {
     formData.append("image", selectedImageFile.value);
     formData.append("caption", captionText.value || "");
 
-    const response = await axios.post(
-      "http://localhost:8000/api/post/add",
+    const response = await api.post(
+      "/api/post/add",
       formData,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      }
     );
 
     if (response.data.success) {

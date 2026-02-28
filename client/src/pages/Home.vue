@@ -152,11 +152,11 @@ import PostModal from "@/components/PostModal.vue";
 import { useAuthStore } from "@/store/AuthStore";
 // Vues components
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import axios from "axios";
 // Utils Import
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 import PostSkeleton from "@/components/skeletons/PostSkeleton.vue";
 import SuggestionsItemSkeleton from "@/components/skeletons/SuggestionsItemSkeleton.vue";
+import api from "@/api";
 
 const stories = [
   {
@@ -217,7 +217,7 @@ async function fetchPosts() {
   isFetchingMore.value = true;
 
   try {
-    const postResponse = await axios.get(`http://localhost:8000/api/post?page=${page}&limit=${limit}`, { withCredentials: true, });
+    const postResponse = await api.get(`/api/post?page=${page}&limit=${limit}`);
 
     allPosts.value.push(...postResponse.data.posts);
   } catch (error) {
@@ -236,9 +236,7 @@ onMounted(async () => {
   isLoading.value = false;
 
   try {
-    const res = await axios.get("http://localhost:8000/api/user", {
-      withCredentials: true,
-    });
+    const res = await api.get("/api/user");
     suggestedUsers.value = res.data.users;
     suggestedUsers.value = suggestedUsers.value.filter(
       (user) => user._id !== authStore.getUser.id,
@@ -315,9 +313,7 @@ const prevStories = () => {
 async function handlePostClick(post) {
   isPostLoading.value = true;
   try {
-    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-      withCredentials: true,
-    });
+    const res = await api.get(`/api/post/${post._id}`);
     selectedPost.value = res.data.post;
     previewPost.value = true;
   } catch (error) {

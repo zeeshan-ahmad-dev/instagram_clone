@@ -19,14 +19,13 @@
             class="flex items-center py-4 gap-7 md:flex-row lg:gap-10 xl:gap-24 xl:px-10 xl:pr-16 md:py-0"
           >
             <!-- Profile image -->
-            <div>
+            <div class="size-20 md:size-[9.5rem] rounded-full overflow-hidden">
               <img
-                class="bg-cover bg-center rounded-full size-20 md:w-[9.5rem] md:h-[9.5rem]"
                 :src="getProfileImageUrl(authStore.getUser.profilePicture)"
+                class="object-cover object-center w-full h-full"
                 alt="Profile Picture"
               />
             </div>
-
             <!-- Profile info: username, buttons, stats, full name -->
             <div class="space-y-3 md:space-y-5">
               <div
@@ -207,17 +206,20 @@
           !isLoading && currentPosts.length > 0 ? 'grid grid-cols-3' : '',
         ]"
       >
-        <div v-if="isLoading" class="flex items-center justify-center w-full h-[20vh]">
-          <img class="size-10" :src="spinner"/>
+        <div
+          v-if="isLoading"
+          class="flex items-center justify-center w-full h-[20vh]"
+        >
+          <img class="size-10" :src="spinner" />
         </div>
-        <div 
+        <div
           @click="handlePostClick(post)"
           v-else-if="authStore.getPosts.length > 0"
           v-for="(post, index) in currentPosts"
           :key="index"
           class="aspect-[3/4] w-full cursor-pointer bg-cover group"
           :style="{
-            backgroundImage: `url(http://localhost:8000${post.image})`,
+            backgroundImage: `url(${post.image})`,
           }"
           to="/"
         >
@@ -268,10 +270,9 @@ import PostModal from "@/components/PostModal.vue";
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 // Stores import
 import { useAuthStore } from "@/store/AuthStore";
-// third party imports
-import axios from "axios";
 // Utility function imports
 import { getProfileImageUrl } from "@/utils/imageHelpers";
+import api from "@/api";
 
 // Store Initialization
 const authStore = useAuthStore();
@@ -292,7 +293,7 @@ watch(activeTab, async (newTab) => {
   } else {
     currentPosts.value = authStore.getPosts;
   }
-})
+});
 
 function handleMoreBtnClick() {
   isMoreActive.value = !isMoreActive.value;
@@ -312,7 +313,7 @@ function handleKeyUp(e) {
 async function fetchSavedPosts() {
   isLoading.value = true;
   try {
-    const res = await axios.get(`http://localhost:8000/api/post/saved/${authStore.getUser.id}`, {withCredentials: true})
+    const res = await api.get(`/api/post/saved/${authStore.getUser.id}`);
 
     return res.data.posts;
   } catch (error) {
@@ -323,9 +324,7 @@ async function fetchSavedPosts() {
 }
 
 async function Logout() {
-  await axios.post("http://localhost:8000/api/user/signout", null, {
-    withCredentials: true,
-  });
+  await api.post("/api/user/signout", null);
   handleMoreBtnClick();
   authStore.logout();
   router.push("/login");
@@ -340,9 +339,7 @@ onMounted(async () => {
   if (!authStore.isLoggedIn) {
     isLoading.value = true;
     try {
-      const response = await axios.get("http://localhost:8000/api/user/me", {
-        withCredentials: true,
-      });
+      const response = await api.get("/api/user/me");
 
       authStore.login(response.data.user);
       authStore.storePosts(response.data.posts);
@@ -364,12 +361,7 @@ async function handleProfileSave({ bio, profilePicture }) {
     formData.append("image", profilePicture);
     formData.append("bio", bio);
 
-    await axios.post("http://localhost:8000/api/user/update/me", formData, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    await api.post("/api/user/update/me", formData);
   } catch (error) {
     console.log("error:", error);
   }
@@ -378,9 +370,7 @@ async function handleProfileSave({ bio, profilePicture }) {
 async function handlePostClick(post) {
   isPostLoading.value = true;
   try {
-    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-      withCredentials: true,
-    });
+    const res = await api.get(`/api/post/${post._id}`);
     selectedPost.value = res.data.post;
     previewPost.value = true;
   } catch (error) {

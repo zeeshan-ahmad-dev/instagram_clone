@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import axios from 'axios';
+import api from '@/api';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -70,10 +70,9 @@ const props = defineProps({
 const isFollowing = ref(props.isFollowing)
 
 async function followUser() {
-  const response = await axios.post(
-    `http://localhost:8000/api/user/follow/${props.userId}`,
+  const response = await api.post(
+    `/api/user/follow/${props.userId}`,
     null,
-    { withCredentials: true }
   );
 
   if (response.data.success) {
@@ -82,10 +81,9 @@ async function followUser() {
 }
 
 async function unfollowUser() {
-  const response = await axios.post(
-    `http://localhost:8000/api/user/unfollow/${props.userId}`,
+  const response = await api.post(
+    `/api/user/unfollow/${props.userId}`,
     null,
-    { withCredentials: true }
   );
 
   if (response.data.success) {

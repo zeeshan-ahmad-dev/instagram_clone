@@ -204,7 +204,7 @@
         :key="index"
         @click="handlePostClick(post)"
         class="aspect-[3/4] w-full cursor-pointer bg-cover group"
-        :style="{ backgroundImage: `url(http://localhost:8000${post.image})` }"
+        :style="{ backgroundImage: `url(${post.image})` }"
       >
         <div
           class="h-full hidden group-hover:grid place-content-center w-full group-hover:bg-[#00000095]"
@@ -253,11 +253,10 @@ import PostModal from "@/components/PostModal.vue";
 // Vues components import
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-// third party imports
-import axios from "axios";
 // Utility function imports
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 import { useAuthStore } from "@/store/AuthStore";
+import api from "@/api";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -282,11 +281,8 @@ onMounted(async () => {
 
 async function fetchUser(id) {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/api/user/profile/${id}`,
-      {
-        withCredentials: true,
-      },
+    const response = await api.get(
+      `/api/user/profile/${id}`,
     );
 
     user.value = response.data.user;
@@ -301,10 +297,9 @@ async function fetchUser(id) {
 }
 
 async function followUser() {
-  const response = await axios.post(
-    `http://localhost:8000/api/user/follow/${user.value.id}`,
+  const response = await api.post(
+    `/api/user/follow/${user.value.id}`,
     null,
-    { withCredentials: true },
   );
 
   if (response.data.success) {
@@ -314,10 +309,9 @@ async function followUser() {
 }
 
 async function unfollowUser() {
-  const response = await axios.post(
-    `http://localhost:8000/api/user/unfollow/${user.value.id}`,
+  const response = await api.post(
+    `/api/user/unfollow/${user.value.id}`,
     null,
-    { withCredentials: true },
   );
 
   if (response.data.success) {
@@ -330,9 +324,7 @@ async function unfollowUser() {
 async function handlePostClick(post) {
   isPostLoading.value = true;
   try {
-    const res = await axios.get(`http://localhost:8000/api/post/${post._id}`, {
-      withCredentials: true,
-    });
+    const res = await api.get(`/api/post/${post._id}`);
     selectedPost.value = res.data.post;
     previewPost.value = true;
   } catch (error) {

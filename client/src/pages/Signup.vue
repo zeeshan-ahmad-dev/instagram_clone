@@ -13,7 +13,7 @@
           Sign up to see photos and videos from your friends
         </h6>
         <a
-          href="http://localhost:8000/auth/facebook"
+          href="/auth/facebook"
           class="bg-[#0095f6] flex gap-2 text-sm w-full py-2 rounded-md justify-center font-semibold text-white"
         >
           <img class="w-5" :src="facebookIcon" alt="" />
@@ -183,12 +183,12 @@ import facebookIcon from "@/assets/icons/facebook_icon.svg";
 // components import
 import Footer from "@/components/Footer.vue";
 // Libraries import
-import axios from "axios";
 import router from "@/router";
 // Store import
 import { useAuthStore } from "@/store/AuthStore";
 // vue import
 import { reactive, ref } from "vue";
+import api from "@/api";
 
 const authStore = useAuthStore();
 
@@ -211,16 +211,13 @@ async function signup() {
   errors.fullName = "";
   
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/user/signup",
+    const response = await api.post(
+      "/api/user/signup",
       {
         username: username.value,
         email: email.value,
         password: password.value,
         fullName: fullName.value,
-      },
-      {
-        withCredentials: true,
       },
     );
     // Stores data after login success from backend

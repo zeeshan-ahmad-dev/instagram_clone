@@ -1,11 +1,11 @@
 <template>
   <aside class="hidden md:block w-auto xl:w-[18vw] h-full border-r px-4 py-6 overflow-auto">
     <!-- Insta Logo for large screens -->
-    <div class="hidden xl:inline-block py-4 mb-6 w-28">
+    <div class="hidden py-4 mb-6 xl:inline-block w-28">
       <img :src="insta_logo" alt="" />
     </div>
     <!-- Insta Icon for small screens -->
-    <div class="xl:hidden flex justify-center py-4 mb-6">
+    <div class="flex justify-center py-4 mb-6 xl:hidden">
       <img class="size-7" :src="insta_icon" alt="" />
     </div>
     <nav class="flex flex-col justify-between h-[84%]">
@@ -29,7 +29,7 @@
         <li>
           <router-link v-if="authStore.getUser" :class="['sidebar-link', /^\/profile\/[^/]+$/.test(route.path) ? 'font-bold' : '']" :to="`/profile/${authStore.getUser.id}`">
             <div :class="['rounded-full', /\/profile\/[^/]+$/.test(route.path) ? 'border-2 border-black' : '']">
-              <img class="rounded-full w-7 h-6 xl:size-7" :src="getProfileImageUrl(authStore.getUser.profilePicture)" />
+              <img class="h-6 rounded-full w-7 xl:size-7" :src="getProfileImageUrl(authStore.getUser.profilePicture)" />
             </div>
             <div class="hidden xl:inline-block">Proifle</div>
           </router-link>
@@ -38,11 +38,11 @@
       <div class="justify-self-end">
         <!-- Dropdown menu -->
         <div v-if="uiStore.showMore" class="absolute -translate-y-20 bottom-4 w-56 md:flex md:flex-col md:text-left shadow-[0_0_16px_rgba(0,0,0,0.2)] md:justify-start md:text-sm overflow-visible bg-white rounded-xl p-2">
-          <button class="text-left px-4 py-4 hover:bg-gray-100 trnasition-all rounded-xl">
+          <button class="px-4 py-4 text-left hover:bg-gray-100 trnasition-all rounded-xl">
             Switch accounts
           </button>
           <div class="h-0.5 bg-gray-100 overflow-hidden -mx-2 my-2"></div>
-          <button @click="Logout" class="text-left px-4 py-4 hover:bg-gray-100 trnasition-all rounded-xl">
+          <button @click="Logout" class="px-4 py-4 text-left hover:bg-gray-100 trnasition-all rounded-xl">
             Log out
           </button>
         </div>
@@ -54,7 +54,7 @@
               <div :class="['bg-black rounded-full', isMoreActive ? 'h-[0.20rem]' : 'h-[2px]' ]"></div>
               <div :class="['bg-black rounded-full', isMoreActive ? 'h-[0.20rem]' : 'h-[2px]' ]"></div>
             </div>
-            <div class="unselectable hidden xl:inline-block">More</div>
+            <div class="hidden unselectable xl:inline-block">More</div>
         </div>
       </div>
     </nav>
@@ -70,9 +70,9 @@ import { useRoute } from "vue-router";
 // stores
 import { useUiStore } from "@/store/UiStore";
 import { useAuthStore } from "@/store/AuthStore";
-import axios from "axios";
 import router from "@/router";
 import { getProfileImageUrl } from '@/utils/imageHelpers'
+import api from "@/api";
 
 const route = useRoute();
 const uiStore = useUiStore();
@@ -90,9 +90,7 @@ function handleMoreBtnClick() {
 }
 
 async function Logout() {
-  await axios.post('http://localhost:8000/api/user/signout', null, {
-    withCredentials: true
-  });
+  await api.post('/api/user/signout', null);
   authStore.logout();
   uiStore.changeMoreDisplay();
   router.push('/login')

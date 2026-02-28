@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import api from '@/api';
 
 export const useAuthStore = defineStore('user', {
     state: () => ({
@@ -30,9 +30,7 @@ export const useAuthStore = defineStore('user', {
             }
             
             try {
-                const response = await axios.get('http://localhost:8000/api/user/me', {
-                    withCredentials: true
-                });
+                const response = await api.get('/api/user/me');
 
                 if (response.status === 200) {
                     this.user = response.data.user;

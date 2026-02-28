@@ -49,7 +49,7 @@
       class="h-[585px] overflow-hidden bg-black rounded-md border border-gray-200 my-3"
     >
       <img
-        :src="`http://localhost:8000${post.image}`"
+        :src="`${post.image}`"
         class="object-contain w-full h-full"
         alt="Post Image"
         loading="lazy"
@@ -169,11 +169,11 @@ import bookmark_dark_icon from "@/assets/icons/bookmark_dark.svg";
 import smile_face_icon from "@/assets/icons/smile_face.png";
 import menu_icon from "@/assets/icons/menu_icon.svg";
 import comment_icon from "@/assets/icons/comment.svg";
-import axios from "axios";
 import { ref, defineProps, defineEmits, onMounted } from "vue";
 import { useAuthStore } from "@/store/AuthStore";
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 import { formatTimeAgo } from "@/utils/timeAgo";
+import api from "@/api";
 
 const authStore = useAuthStore();
 
@@ -211,12 +211,9 @@ async function likePost() {
   isLiked.value = !isLiked.value;
   likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   try {
-    const response = await axios.patch(
-      `http://localhost:8000/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
+    await api.patch(
+      `/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
       null,
-      {
-        withCredentials: true,
-      },
     );
   } catch (error) {
     isLiked.value = !isLiked.value;
@@ -229,12 +226,9 @@ async function toggleSavedPost() {
   const previousState = isSaved.value;
   isSaved.value = !isSaved.value;
   try {
-    await axios.patch(
-      `http://localhost:8000/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
+    await api.patch(
+      `/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
       null,
-      {
-        withCredentials: true,
-      },
     );
   } catch (error) {
     isSaved.value = previousState;

@@ -137,11 +137,11 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useAuthStore } from "@/store/AuthStore";
-import axios from "axios";
 import Footer from "@/components/Footer.vue";
 import router from "@/router";
 import instaLogo from "@/assets/icons/insta_logo.png";
 import facebookBlueIcon from "@/assets/icons/facebook_blue_icon.svg";
+import api from "@/api";
 
 const AuthStore = useAuthStore();
 
@@ -157,17 +157,15 @@ async function handleLogin() {
   errors.email = "";
   errors.password = "";
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/user/signin",
+    const response = await api.post(
+      "/api/user/signin",
       {
         email: email.value,
         password: password.value,
       },
-      { withCredentials: true },
     );
-    const postsResponse = await axios.get(
-      `http://localhost:8000/api/post/user/${response.data.user.id}`,
-      { withCredentials: true },
+    const postsResponse = await api.get(
+      `/api/post/user/${response.data.user.id}`
     );
 
     const { user } = response.data;
@@ -175,7 +173,10 @@ async function handleLogin() {
     AuthStore.storePosts(postsResponse.data.posts);
     router.push(`/profile/${user.id}`);
   } catch (error) {
-    Object.assign(errors, error.response.data.errors)
+    console.log(error)
+    if (error.response?.data?.errors) {
+      Object.assign(errors, error.response.data.errors);
+    }
   }
 }
 </script>

@@ -182,8 +182,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import axios from "axios";
+import { ref, watch } from "vue";
 import { useAuthStore } from "@/store/AuthStore";
 import { getProfileImageUrl } from "@/utils/imageHelpers";
 import message_icon from "@/assets/icons/message.svg";
@@ -194,6 +193,7 @@ import send_icon_light from "@/assets/icons/send_light.png";
 import bookmark_light_icon from "@/assets/icons/bookmark_light.svg";
 import bookmark_dark_icon from "@/assets/icons/bookmark_dark.svg";
 import { formatTimeAgo } from "@/utils/timeAgo";
+import api from "@/api";
 
 // Props
 const props = defineProps({
@@ -223,9 +223,8 @@ watch(
     if (newPost) {
       postCreatedAt.value = formatTimeAgo(props.post?.createdAt);
 
-      const response = await axios.get(
-        `http://localhost:8000/api/comments/${newPost._id}`,
-        { withCredentials: true },
+      const response = await api.get(
+        `/api/comments/${newPost._id}`,
       );
       postComments.value = response.data.comments;
       isLiked.value = newPost.likes.includes(authStore.getUser.id);
@@ -240,10 +239,9 @@ async function toggleLike() {
   isLiked.value = !isLiked.value;
   likes.value = isLiked.value ? likes.value + 1 : likes.value - 1;
   try {
-    await axios.patch(
-      `http://localhost:8000/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
+    await api.patch(
+      `/api/post/${isLiked.value ? "like" : "unlike"}/${props.post._id}`,
       null,
-      { withCredentials: true },
     );
   } catch (error) {
     console.log(error);
@@ -262,8 +260,8 @@ async function postComment() {
   });
 
   try {
-    const response = await axios.post(
-      `http://localhost:8000/api/comments/add/${props.post._id}`,
+    await api.post(
+      `/api/comments/add/${props.post._id}`,
       {
         message: comment.value,
         postId: props.post._id,
@@ -271,7 +269,6 @@ async function postComment() {
         username: authStore.getUser.username,
         pfp: authStore.getUser.profilePicture,
       },
-      { withCredentials: true },
     );
   } catch (error) {
     console.log(error);
@@ -285,12 +282,9 @@ async function toggleSavedPost() {
   const previousState = isSaved.value;
   isSaved.value = !isSaved.value;
   try {
-    await axios.patch(
-      `http://localhost:8000/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
+    await api.patch(
+      `/api/post/${previousState ? "save" : "unsave"}/${props.post._id}`,
       null,
-      {
-        withCredentials: true,
-      },
     );
   } catch (error) {
     isSaved.value = previousState;

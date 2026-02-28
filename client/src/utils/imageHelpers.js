@@ -1,5 +1,5 @@
 export function getProfileImageUrl(path) {
-  if (!path) return "http://localhost:8000/uploads/profilePics/default.jpg";
+  if (!path) return `${import.meta.env.VITE_API_BASE_URL}/uploads/profilePics/default.jpg`;
   
   const trimmedPath = path.trim();
 
@@ -7,5 +7,5 @@ export function getProfileImageUrl(path) {
     return trimmedPath;
   }
 
-  return `http://localhost:8000${trimmedPath}`;
+  return `${import.meta.env.VITE_API_BASE_URL}${trimmedPath}`;
 }

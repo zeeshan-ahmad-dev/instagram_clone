@@ -78,8 +78,6 @@ router.beforeEach(async (to, from, next) => {
     await authStore.loadFromStorage();
   }
 
-  console.log(authStore.isLoggedIn)
-  
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     next('/login');
   } else {

@@ -80,7 +80,7 @@
 
         <!-- Facebook Login -->
         <a
-          href="http://localhost:8000/auth/facebook"
+          :href="facebookAuthUrl"
           class="flex justify-center items-center gap-2 text-sm font-semibold text-[#0095f6] w-full py-2 rounded-md"
         >
           <img class="w-6" :src="facebookBlueIcon" alt="" />
@@ -142,6 +142,8 @@ import router from "@/router";
 import instaLogo from "@/assets/icons/insta_logo.png";
 import facebookBlueIcon from "@/assets/icons/facebook_blue_icon.svg";
 import api from "@/api";
+
+const facebookAuthUrl = `${import.meta.env.VITE_API_BASE_URL}/auth/facebook`;
 
 const AuthStore = useAuthStore();
 

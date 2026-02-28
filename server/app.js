@@ -25,10 +25,17 @@ app.use(cors({
 }))
 
 app.use(session({
-    secret: "Its secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: true, 
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24 * 30
+    }
 }))
+
 app.use(passport.initialize());
 app.use(passport.session());
 

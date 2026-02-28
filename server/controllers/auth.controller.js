@@ -7,7 +7,7 @@ class TokenController {
             id: user.id,
         }
     
-        const token = jwt.sign(userPayload, secret, {algorithm: 'HS256', expiresIn: '24h'});
+        const token = jwt.sign(userPayload, secret, { algorithm: 'HS256' });
         return token;
     }
     VerifyToken(token) {

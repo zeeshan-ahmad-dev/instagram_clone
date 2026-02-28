@@ -14,6 +14,8 @@ require('./configs/passport');
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Initialize MongoDB connection
 connectUsingMongoose(); 
 
@@ -21,7 +23,6 @@ app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
 }))
-
 
 app.use(session({
     secret: "Its secret",
